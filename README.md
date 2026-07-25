@@ -1,4 +1,4 @@
-# Landmark-AI
+# Landmark-AI-Data
 
 Commercial real estate intelligence that combines document evidence, market
 data, a property knowledge graph and spatiotemporal forecasts in one research
