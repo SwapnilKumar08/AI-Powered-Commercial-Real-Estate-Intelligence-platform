@@ -466,17 +466,17 @@ export function CREWorkspace() {
           <div className="platform-layout">
             <section className="platform-cosmos">
               <div className="cosmos-title">
-                <span className="section-kicker">Propeterra-inspired interface</span>
-                <h2>Global command sphere</h2>
+                <span className="section-kicker">Atlas nexus interface</span>
+                <h2>Global portfolio cockpit</h2>
                 <p>
-                  Unified geospatial apps, transaction intelligence and market analytics
-                  connected to country-level real-estate datasets.
+                  A redesigned operating layer for acquisitions, leasing intelligence,
+                  and macro-risk monitoring connected to country-level property data.
                 </p>
               </div>
 
               <div className="cosmos-core">
                 <div className="tool-column left">
-                  <span className="column-label">Geo spatial apps</span>
+                  <span className="column-label">Market scanners</span>
                   {topCountries.slice(0, 3).map((profile) => (
                     <button
                       key={profile.code}
@@ -513,7 +513,7 @@ export function CREWorkspace() {
                 </div>
 
                 <div className="tool-column right">
-                  <span className="column-label">Data analytics</span>
+                  <span className="column-label">Decision engines</span>
                   {topCountries.slice(3).map((profile) => (
                     <button
                       key={profile.code}
@@ -529,10 +529,10 @@ export function CREWorkspace() {
 
               <div className="resource-clusters">
                 {[
-                  ["Frontier markets", "High-upside early cycle regions"],
-                  ["Emerging markets", "Demand-led urbanization corridors"],
-                  ["Developed markets", "Stabilized institutional districts"],
-                  ["Social impact", "Housing and mixed-use inclusion themes"],
+                  ["Logistics corridors", "Port and inland distribution growth lanes"],
+                  ["Urban housing pressure", "Demand hotspots with constrained pipeline"],
+                  ["Office repricing", "CBD leasing resets and retrofit opportunities"],
+                  ["Climate adaptation", "Resilience-led redevelopment strategies"],
                 ].map(([label, description]) => (
                   <article key={label}>
                     <span>{label}</span>
@@ -544,24 +544,24 @@ export function CREWorkspace() {
 
             <aside className="platform-insights">
               <div className="insight-card">
-                <span>Country coverage</span>
+                <span>Market coverage</span>
                 <strong>{globalSearchStats.countries}</strong>
-                <small>active market datasets</small>
+                <small>live geographic domains</small>
               </div>
               <div className="insight-card">
-                <span>Projects mapped</span>
+                <span>Assets mapped</span>
                 <strong>{globalProjectCount}</strong>
-                <small>structured project records</small>
+                <small>structured opportunity records</small>
               </div>
               <div className="insight-card">
-                <span>Expertise vectors</span>
+                <span>Signal vectors</span>
                 <strong>{globalExpertiseCount}</strong>
-                <small>cross-market capability tags</small>
+                <small>cross-market feature dimensions</small>
               </div>
               <div className="insight-card highlight">
-                <span>Composite forecast</span>
+                <span>Scenario pulse</span>
                 <strong>+{globalForecastDelta}%</strong>
-                <small>{model === "predrnn" ? "PredRNN" : "ConvLSTM"} global mean horizon</small>
+                <small>{model === "predrnn" ? "PredRNN" : "ConvLSTM"} global weighted horizon</small>
               </div>
               <div className="global-search-panel">
                 <span className="section-kicker">Global data search</span>

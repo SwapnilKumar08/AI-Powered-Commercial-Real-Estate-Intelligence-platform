@@ -17,11 +17,11 @@ export default function Home() {
     <main className="global-landing">
       <section className="global-hero-3d">
         <div className="global-hero-copy">
-          <span className="eyebrow">PROPETERRA GLOBAL INTERFACE</span>
-          <h1>3D real-estate intelligence across global markets.</h1>
+          <span className="eyebrow">ATLAS NEXUS INTERFACE</span>
+          <h1>Global property intelligence, redesigned from the ground up.</h1>
           <p>
-            Explore worldwide company and project records, run country-aware forecasts,
-            and move from discovery to deal origination in a single immersive workspace.
+            Navigate a new 3D command surface for cross-border real-estate discovery,
+            pipeline scoring, and market simulation with country-linked source data.
           </p>
           <div className="hero-actions">
             <Link className="primary-action" href="/workspace">
@@ -37,16 +37,16 @@ export default function Home() {
           <div className="core-orbit orbit-a" />
           <div className="core-orbit orbit-b" />
           <div className="core-planet">
-            <small>LIVE INDEX</small>
+            <small>ATLAS INDEX</small>
             <strong>{globalSearchStats.records}</strong>
-            <span>Global property records</span>
+            <span>Global records mapped</span>
           </div>
-          <div className="core-node node-1">Consultelligence</div>
-          <div className="core-node node-2">Deal Planet</div>
-          <div className="core-node node-3">Heat Vision</div>
-          <div className="core-node node-4">Dashtelligence</div>
-          <div className="core-node node-5">Property News</div>
-          <div className="core-node node-6">Geo Spatial Apps</div>
+          <div className="core-node node-1">Capital Flows</div>
+          <div className="core-node node-2">Pipeline Radar</div>
+          <div className="core-node node-3">Permit Pulse</div>
+          <div className="core-node node-4">Lease Momentum</div>
+          <div className="core-node node-5">Risk Grid</div>
+          <div className="core-node node-6">Transit Layer</div>
         </div>
       </section>
 
@@ -54,22 +54,22 @@ export default function Home() {
         <article>
           <span>Countries covered</span>
           <strong>{globalSearchStats.countries}</strong>
-          <small>active market datasets</small>
+          <small>live market domains</small>
         </article>
         <article>
           <span>Companies indexed</span>
           <strong>{globalSearchStats.companies}</strong>
-          <small>normalized from source files</small>
+          <small>entity-matched operators</small>
         </article>
         <article>
           <span>Projects tracked</span>
           <strong>{globalSearchStats.projects}</strong>
-          <small>deep records and developments</small>
+          <small>active and planned assets</small>
         </article>
         <article>
-          <span>Forecast momentum</span>
+          <span>Scenario momentum</span>
           <strong>+{globalForecastDelta}%</strong>
-          <small>PredRNN global average horizon</small>
+          <small>global weighted forecast trend</small>
         </article>
       </section>
 
@@ -88,11 +88,11 @@ export default function Home() {
 
       <section className="global-cta-strip">
         <div>
-          <span className="section-kicker">Resource centres</span>
-          <h3>Frontier, emerging, developed and impact-led investment workflows.</h3>
+          <span className="section-kicker">Operational playbooks</span>
+          <h3>From acquisitions screening to portfolio defense, in one connected workspace.</h3>
           <p>
-            The workspace includes global search, traceable evidence, forecast lab and
-            responsible origination controls.
+            The platform now prioritizes global search velocity, cross-market comparables,
+            and explainable forecasting before outreach decisions.
           </p>
         </div>
         <div className="hero-actions">
