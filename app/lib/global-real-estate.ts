@@ -89,12 +89,12 @@ function slug(value: string) {
 
 const team1Records: GlobalPropertyRecord[] = companySources.flatMap(({ code, rows }) => {
   const meta = countryMeta[code];
-  return rows
-    .map((row) => {
-      const companyName = compactText(row.company_name);
-      const website = compactText(row.website);
-      if (!companyName || !website) return null;
-      return {
+  return rows.flatMap((row) => {
+    const companyName = compactText(row.company_name);
+    const website = compactText(row.website);
+    if (!companyName || !website) return [];
+    return [
+      {
         id: `${code}-company-${slug(companyName)}`,
         countryCode: code,
         country: meta.country,
@@ -105,9 +105,9 @@ const team1Records: GlobalPropertyRecord[] = companySources.flatMap(({ code, row
         location: meta.country,
         tags: ["company", "portfolio", meta.country.toLowerCase(), "real-estate"],
         source: "team1" as const,
-      };
-    })
-    .filter((record): record is GlobalPropertyRecord => Boolean(record));
+      },
+    ];
+  });
 });
 
 const team3Records: GlobalPropertyRecord[] = deepSources.flatMap(({ code, rows }) => {
@@ -134,12 +134,12 @@ const team3Records: GlobalPropertyRecord[] = deepSources.flatMap(({ code, rows }
       source: "team3",
     };
 
-    const projectRecords = projects
-      .map((project, projectIndex) => {
-        const projectName = compactText(project.name);
-        if (!projectName) return null;
-        const projectLocation = compactText(project.location) || meta.country;
-        return {
+    const projectRecords = projects.flatMap((project, projectIndex) => {
+      const projectName = compactText(project.name);
+      if (!projectName) return [];
+      const projectLocation = compactText(project.location) || meta.country;
+      return [
+        {
           id: `${code}-project-${slug(companyName)}-${slug(projectName)}-${projectIndex + 1}`,
           countryCode: code,
           country: meta.country,
@@ -152,9 +152,9 @@ const team3Records: GlobalPropertyRecord[] = deepSources.flatMap(({ code, rows }
           location: projectLocation,
           tags: ["project", "development", ...expertise.slice(0, 4).map((item) => item.toLowerCase())],
           source: "team3" as const,
-        };
-      })
-      .filter((record): record is GlobalPropertyRecord => Boolean(record));
+        },
+      ];
+    });
 
     return [companyRecord, ...projectRecords];
   });
