@@ -71,8 +71,6 @@ The workspace now includes a country selector with integrated datasets for:
 - Pakistan
 - Sri Lanka
 
-Source records are normalized from the linked `Propeterra-Work_Artificial-Intelligence-Engineer` repository (`team1_*` and `team3_*` JSON files), then transformed into country-level company coverage, evidence snapshots and market-bias-adjusted forecast series for the interactive workspace.
-
 ## Run the workspace
 
 Requirements: Node.js 22.13+ and pnpm.
