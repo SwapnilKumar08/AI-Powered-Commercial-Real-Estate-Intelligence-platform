@@ -1,0 +1,1019 @@
+import asyncio
+import aiohttp
+import json
+import csv
+import re
+import logging
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Union, Any
+from dataclasses import dataclass, asdict
+from urllib.parse import urljoin, urlparse
+import time
+from pathlib import Path
+import sqlite3
+from bs4 import BeautifulSoup
+import pandas as pd
+from fake_useragent import UserAgent
+import hashlib
+import yaml
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+@dataclass
+class PlanningApplication:
+    """Standard structure for planning application data"""
+    council_name: str
+    application_id: str
+    address: str
+    description: str
+    status: str
+    date_submitted: Optional[str] = None
+    date_validated: Optional[str] = None
+    date_decided: Optional[str] = None
+    decision: Optional[str] = None
+    case_officer: Optional[str] = None
+    agent_name: Optional[str] = None
+    applicant_name: Optional[str] = None
+    ward: Optional[str] = None
+    parish: Optional[str] = None
+    application_type: Optional[str] = None
+    fee_paid: Optional[str] = None
+    consultation_end_date: Optional[str] = None
+    target_date: Optional[str] = None
+    appeal_status: Optional[str] = None
+    url: Optional[str] = None
+    scraped_at: str = datetime.now().isoformat()
+
+@dataclass
+class CouncilConfig:
+    """Configuration for each council"""
+    name: str
+    country: str
+    url: str
+    system_type: str  # uniform, ocella, custom, etc.
+    rate_limit: float = 1.0  
+    max_retries: int = 3
+    custom_headers: Dict[str, str] = None
+    search_params: Dict[str, Any] = None
+    pagination: Dict[str, Any] = None
+    
+class DatabaseManager:
+    """Handles all database operations"""
+    
+    def __init__(self, db_path: str = "uk_planning_data.db"):
+        self.db_path = db_path
+        self.init_database()
+    
+    def init_database(self):
+        """Initializing SQLite database with required tables"""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS planning_applications (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    council_name TEXT NOT NULL,
+                    application_id TEXT NOT NULL,
+                    address TEXT,
+                    description TEXT,
+                    status TEXT,
+                    date_submitted TEXT,
+                    date_validated TEXT,
+                    date_decided TEXT,
+                    decision TEXT,
+                    case_officer TEXT,
+                    agent_name TEXT,
+                    applicant_name TEXT,
+                    ward TEXT,
+                    parish TEXT,
+                    application_type TEXT,
+                    fee_paid TEXT,
+                    consultation_end_date TEXT,
+                    target_date TEXT,
+                    appeal_status TEXT,
+                    url TEXT,
+                    scraped_at TEXT,
+                    UNIQUE(council_name, application_id)
+                )
+            """)
+            
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS council_status (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    council_name TEXT UNIQUE,
+                    last_scraped TEXT,
+                    status TEXT,
+                    error_message TEXT,
+                    applications_found INTEGER,
+                    response_time REAL
+                )
+            """)
+            
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS scraping_logs (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp TEXT,
+                    council_name TEXT,
+                    level TEXT,
+                    message TEXT,
+                    details TEXT
+                )
+            """)
+            
+            conn.commit()
+    
+    def save_applications(self, applications: List[PlanningApplication]):
+        """Save planning applications to database"""
+        with sqlite3.connect(self.db_path) as conn:
+            for app in applications:
+                try:
+                    conn.execute("""
+                        INSERT OR REPLACE INTO planning_applications 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        None, app.council_name, app.application_id, app.address,
+                        app.description, app.status, app.date_submitted, app.date_validated,
+                        app.date_decided, app.decision, app.case_officer, app.agent_name,
+                        app.applicant_name, app.ward, app.parish, app.application_type,
+                        app.fee_paid, app.consultation_end_date, app.target_date,
+                        app.appeal_status, app.url, app.scraped_at
+                    ))
+                except sqlite3.Error as e:
+                    logger.error(f"Error saving application {app.application_id}: {e}")
+            conn.commit()
+    
+    def update_council_status(self, council_name: str, status: str, 
+                            applications_found: int = 0, error_message: str = None,
+                            response_time: float = None):
+        """Updating council scraping status"""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO council_status 
+                (council_name, last_scraped, status, error_message, applications_found, response_time)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (council_name, datetime.now().isoformat(), status, error_message, applications_found, response_time))
+            conn.commit()
+    
+    def log_activity(self, council_name: str, level: str, message: str, details: str = None):
+        """Log scraping activity"""
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute("""
+                INSERT INTO scraping_logs (timestamp, council_name, level, message, details)
+                VALUES (?, ?, ?, ?, ?)
+            """, (datetime.now().isoformat(), council_name, level, message, details))
+            conn.commit()
+
+class BaseParser:
+    """Base class for council-specific parsers"""
+    
+    def __init__(self, config: CouncilConfig):
+        self.config = config
+        self.session = None
+        self.ua = UserAgent()
+    
+    async def parse_applications(self, html: str, base_url: str) -> List[PlanningApplication]:
+        """Parse planning applications from HTML - to be implemented by subclasses"""
+        raise NotImplementedError("Subclasses must implement parse_applications method")
+    
+    def clean_text(self, text: str) -> str:
+        """Clean and normalize text"""
+        if not text:
+            return ""
+        return re.sub(r'\s+', ' ', text.strip())
+    
+    def parse_date(self, date_str: str) -> Optional[str]:
+        """Parse date from various formats to ISO format"""
+        if not date_str:
+            return None
+        
+        date_formats = [
+            "%d/%m/%Y", "%d-%m-%Y", "%Y-%m-%d",
+            "%d %b %Y", "%d %B %Y", "%b %d, %Y"
+        ]
+        
+        for fmt in date_formats:
+            try:
+                return datetime.strptime(date_str.strip(), fmt).strftime("%Y-%m-%d")
+            except ValueError:
+                continue
+        return date_str  # Return as-is if parsing fails
+
+class UniformParser(BaseParser):
+    """Parser for councils using Uniform system"""
+    
+    async def parse_applications(self, html: str, base_url: str) -> List[PlanningApplication]:
+        """Parse applications from Uniform planning system"""
+        soup = BeautifulSoup(html, 'html.parser')
+        applications = []
+        
+        app_rows = soup.find_all(['tr', 'div'], class_=re.compile(r'searchresult|application-row|result-item'))
+        
+        for row in app_rows:
+            try:
+                app_data = self._extract_uniform_data(row, base_url)
+                if app_data:
+                    applications.append(app_data)
+            except Exception as e:
+                logger.warning(f"Error parsing uniform row for {self.config.name}: {e}")
+        
+        return applications
+    
+    def _extract_uniform_data(self, row, base_url: str) -> Optional[PlanningApplication]:
+        """Extracting data from a Uniform system row"""
+
+        app_id_elem = row.find(['a', 'span'], string=re.compile(r'\d{2}\/\d{4,5}\/\w+'))
+        if not app_id_elem:
+            app_id_elem = row.find(['a', 'span'], class_=re.compile(r'application-id|ref'))
+        
+        if not app_id_elem:
+            return None
+        
+        app_id = self.clean_text(app_id_elem.get_text())
+        
+        address_elem = row.find(['td', 'div'], class_=re.compile(r'address|location'))
+        address = self.clean_text(address_elem.get_text()) if address_elem else ""
+        
+        desc_elem = row.find(['td', 'div'], class_=re.compile(r'description|proposal'))
+        description = self.clean_text(desc_elem.get_text()) if desc_elem else ""
+        
+        status_elem = row.find(['td', 'div', 'span'], class_=re.compile(r'status|decision'))
+        status = self.clean_text(status_elem.get_text()) if status_elem else "Unknown"
+        
+        date_elem = row.find(['td', 'div'], class_=re.compile(r'date|received|submitted'))
+        date_submitted = self.parse_date(date_elem.get_text()) if date_elem else None
+        
+        url_elem = row.find('a', href=True)
+        app_url = urljoin(base_url, url_elem['href']) if url_elem else None
+        
+        return PlanningApplication(
+            council_name=self.config.name,
+            application_id=app_id,
+            address=address,
+            description=description,
+            status=status,
+            date_submitted=date_submitted,
+            url=app_url
+        )
+
+class OcellaParser(BaseParser):
+    """Parser for councils using Ocella system"""
+    
+    async def parse_applications(self, html: str, base_url: str) -> List[PlanningApplication]:
+        """Parse applications from Ocella planning system"""
+        soup = BeautifulSoup(html, 'html.parser')
+        applications = []
+        
+        app_rows = soup.find_all('tr', class_=re.compile(r'odd|even|result'))
+        
+        for row in app_rows:
+            try:
+                app_data = self._extract_ocella_data(row, base_url)
+                if app_data:
+                    applications.append(app_data)
+            except Exception as e:
+                logger.warning(f"Error parsing Ocella row for {self.config.name}: {e}")
+        
+        return applications
+    
+    def _extract_ocella_data(self, row, base_url: str) -> Optional[PlanningApplication]:
+        """Extracting data from an Ocella system row"""
+        cells = row.find_all(['td', 'th'])
+        if len(cells) < 4:
+            return None
+        
+        app_id = self.clean_text(cells[0].get_text())
+        address = self.clean_text(cells[1].get_text())
+        description = self.clean_text(cells[2].get_text()) if len(cells) > 2 else ""
+        status = self.clean_text(cells[3].get_text()) if len(cells) > 3 else "Unknown"
+        date_submitted = self.parse_date(cells[4].get_text()) if len(cells) > 4 else None
+        
+        url_elem = cells[0].find('a', href=True)
+        app_url = urljoin(base_url, url_elem['href']) if url_elem else None
+        
+        return PlanningApplication(
+            council_name=self.config.name,
+            application_id=app_id,
+            address=address,
+            description=description,
+            status=status,
+            date_submitted=date_submitted,
+            url=app_url
+        )
+
+class CustomParser(BaseParser):
+    """Parser for councils with custom systems"""
+    
+    async def parse_applications(self, html: str, base_url: str) -> List[PlanningApplication]:
+        """Parse applications from custom planning systems"""
+        soup = BeautifulSoup(html, 'html.parser')
+        applications = []
+        
+        selectors = [
+            'div[class*="planning"]',
+            'tr[class*="application"]',
+            'div[class*="search-result"]',
+            'div[class*="result"]',
+            'li[class*="application"]'
+        ]
+        
+        for selector in selectors:
+            elements = soup.select(selector)
+            if elements:
+                for element in elements:
+                    try:
+                        app_data = self._extract_custom_data(element, base_url)
+                        if app_data:
+                            applications.append(app_data)
+                    except Exception as e:
+                        logger.warning(f"Error parsing custom element for {self.config.name}: {e}")
+                break
+        
+        return applications
+    
+    def _extract_custom_data(self, element, base_url: str) -> Optional[PlanningApplication]:
+        """Extracting data from custom system elements"""
+        # Look for application reference patterns
+        app_id_patterns = [
+            r'\d{2}\/\d{4,5}\/\w+',  # 23/12345/FUL
+            r'\w{2,4}\d{4,6}',       # ABC123456
+            r'\d{4}\/\d{4,6}',       # 2023/12345
+        ]
+        
+        text_content = element.get_text()
+        app_id = None
+        
+        for pattern in app_id_patterns:
+            match = re.search(pattern, text_content)
+            if match:
+                app_id = match.group()
+                break
+        
+        if not app_id:
+            return None
+        
+        lines = [line.strip() for line in text_content.split('\n') if line.strip()]
+        
+        address = ""
+        description = ""
+        status = "Unknown"
+        
+        for i, line in enumerate(lines):
+            # Address often contains street indicators
+            if any(indicator in line.lower() for indicator in ['road', 'street', 'avenue', 'lane', 'drive']):
+                address = line
+            # Status often contains decision keywords
+            elif any(keyword in line.lower() for keyword in ['approved', 'refused', 'pending', 'granted']):
+                status = line
+            # Description often contains development keywords
+            elif any(keyword in line.lower() for keyword in ['extension', 'demolition', 'conversion', 'dwelling']):
+                description = line
+        
+        url_elem = element.find('a', href=True)
+        app_url = urljoin(base_url, url_elem['href']) if url_elem else None
+        
+        return PlanningApplication(
+            council_name=self.config.name,
+            application_id=app_id,
+            address=address,
+            description=description,
+            status=status,
+            url=app_url
+        )
+
+class CouncilScraper:
+    """Main scraping orchestrator"""
+    
+    def __init__(self):
+        self.db = DatabaseManager()
+        self.sessions = {}
+        self.parsers = {}
+        self.configs = self._load_council_configs()
+    
+    def _load_council_configs(self) -> Dict[str, CouncilConfig]:
+        """Loading council configurations"""
+        configs = {}
+        
+        council_data = [
+            {"name": "Fylde", "country": "England", "url": "https://pa.fylde.gov.uk/Search/Advanced", "system_type": "uniform"},
+            {"name": "Gateshead", "country": "England", "url": "https://public.gateshead.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Gedling", "country": "England", "url": "https://pawam.gedling.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Gloucester", "country": "England", "url": "https://www.gloucester.gov.uk/planning-development/planning-applications/view-planning-applications-online/", "system_type": "custom"},
+            {"name": "Gloucestershire", "country": "England", "url": "https://www.gloucestershire.gov.uk/planning-and-environment/planning-applications/search-and-track-planning-applications/", "system_type": "custom"},
+            {"name": "Gosport", "country": "England", "url": "https://publicaccess.gosport.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Gravesham", "country": "England", "url": "https://plan.gravesham.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Great Yarmouth", "country": "England", "url": "https://planning.great-yarmouth.gov.uk/OcellaWeb/planningSearch", "system_type": "ocella"},
+            {"name": "Greenwich", "country": "England", "url": "https://planning.royalgreenwich.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Guildford", "country": "England", "url": "https://www2.guildford.gov.uk/publicaccess/", "system_type": "uniform"},
+            {"name": "Hackney", "country": "England", "url": "https://planningapps.hackney.gov.uk/planning/index.html?fa=search", "system_type": "custom"},
+            {"name": "Halton", "country": "England", "url": "https://webapp.halton.gov.uk/planningapps/", "system_type": "custom"},
+            {"name": "Hambleton", "country": "England", "url": "https://planning.hambleton.gov.uk/online-applications/search.do?action=simple&searchType=Application", "system_type": "uniform"},
+            {"name": "Hammersmith and Fulham", "country": "England", "url": "https://public-access.lbhf.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Hampshire", "country": "England", "url": "https://planning.hants.gov.uk/", "system_type": "custom"},
+            {"name": "Harborough", "country": "England", "url": "https://pa2.harborough.gov.uk/online-applications/search.do?action=simple&searchType=Application", "system_type": "uniform"},
+            {"name": "Haringey", "country": "England", "url": "http://www.planningservices.haringey.gov.uk/portal/servlets/ApplicationSearchServlet", "system_type": "custom"},
+            {"name": "Harlow", "country": "England", "url": "https://planningonline.harlow.gov.uk/online-applications/search.do?action=simple", "system_type": "uniform"},
+            {"name": "Harrogate", "country": "England", "url": "https://uniformonline.harrogate.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Harrow", "country": "England", "url": "https://planningsearch.harrow.gov.uk/planning/search-applications", "system_type": "custom"},
+            {"name": "Hart", "country": "England", "url": "https://publicaccess.hart.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Hartlepool", "country": "England", "url": "http://www.hartlepool.gov.uk/info/20222/planning/380/search_for_a_planning_application/1", "system_type": "custom"},
+            {"name": "Hastings", "country": "England", "url": "https://publicaccess.hastings.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Havant", "country": "England", "url": "https://www.havant.gov.uk/search-and-comment-planning-applications", "system_type": "custom"},
+            {"name": "Havering", "country": "England", "url": "https://development.havering.gov.uk/OcellaWeb/planningSearch", "system_type": "ocella"},
+            {"name": "Herefordshire", "country": "England", "url": "https://www.herefordshire.gov.uk/info/200142/planning_services/planning_application_search", "system_type": "custom"},
+            {"name": "Hertsmere", "country": "England", "url": "https://www6.hertsmere.gov.uk/online-applications/search.do?action=simple&searchType=Application", "system_type": "uniform"},
+            {"name": "High Peak", "country": "England", "url": "http://planning.highpeak.gov.uk/portal/servlets/ApplicationSearchServlet", "system_type": "custom"},
+            {"name": "Hillingdon", "country": "England", "url": "https://planning.hillingdon.gov.uk/OcellaWeb/planningSearch", "system_type": "ocella"},
+            {"name": "Hinckley and Bosworth", "country": "England", "url": "https://planning.hinckley-bosworth.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Horsham", "country": "England", "url": "https://public-access.horsham.gov.uk/public-access/", "system_type": "uniform"},
+            {"name": "Hounslow", "country": "England", "url": "https://planning.hounslow.gov.uk/planning_search.aspx", "system_type": "custom"},
+            {"name": "Huntingdonshire", "country": "England", "url": "https://publicaccess.huntingdonshire.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Hyndburn", "country": "England", "url": "https://www.hyndburnbc.gov.uk/planning-application-search/", "system_type": "custom"},
+            {"name": "Ipswich", "country": "England", "url": "https://www.ipswich.gov.uk/services/planning-applications", "system_type": "custom"},
+            {"name": "Isle of Wight", "country": "England", "url": "https://www.iow.gov.uk/planning", "system_type": "custom"},
+            {"name": "Isles Of Scilly", "country": "England", "url": "https://www.scilly.gov.uk/planning-development/planning-applications", "system_type": "custom"},
+            {"name": "Islington", "country": "England", "url": "https://planning.islington.gov.uk/northgate/planningexplorer/generalsearch.aspx", "system_type": "custom"},
+            {"name": "Kensington and Chelsea", "country": "England", "url": "https://www.rbkc.gov.uk/planning/searches/default.aspx?adv=1#advancedSearch", "system_type": "custom"},
+            {"name": "King's Lynn And West Norfolk", "country": "England", "url": "https://online.west-norfolk.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Kingston upon Hull", "country": "England", "url": "https://www.hullcc.gov.uk/padcbc/publicaccess-live/search.do?action=simple", "system_type": "uniform"},
+            {"name": "Kingston Upon Thames", "country": "England", "url": "https://www.kingston.gov.uk/applications/comment-planning-application", "system_type": "custom"},
+            {"name": "Kirklees", "country": "England", "url": "https://www.kirklees.gov.uk/beta/planning-applications/search-for-planning-applications/default.aspx?advanced_search=true", "system_type": "custom"},
+            {"name": "Knowsley", "country": "England", "url": "https://planapp.knowsley.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Lambeth", "country": "England", "url": "https://planning.lambeth.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Lancaster", "country": "England", "url": "https://planning.lancaster.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Leeds", "country": "England", "url": "https://publicaccess.leeds.gov.uk/online-applications/", "system_type": "uniform"},
+            {"name": "Leicester", "country": "England", "url": "https://planning.leicester.gov.uk/", "system_type": "custom"},
+        ]
+        
+        for data in council_data:
+            config = CouncilConfig(
+                name=data["name"],
+                country=data["country"],
+                url=data["url"],
+                system_type=data["system_type"],
+                rate_limit=1.0,  # 1 second between requests
+                custom_headers={"User-Agent": UserAgent().random}
+            )
+            configs[data["name"]] = config
+        
+        return configs
+    
+    def _get_parser(self, config: CouncilConfig) -> BaseParser:
+        """Getting appropriate parser for council system type"""
+        if config.name not in self.parsers:
+            if config.system_type == "uniform":
+                self.parsers[config.name] = UniformParser(config)
+            elif config.system_type == "ocella":
+                self.parsers[config.name] = OcellaParser(config)
+            else:  # custom or unknown
+                self.parsers[config.name] = CustomParser(config)
+        
+        return self.parsers[config.name]
+    
+    async def scrape_council(self, council_name: str) -> int:
+        """Scraping a single council"""
+        if council_name not in self.configs:
+            logger.error(f"Unknown council: {council_name}")
+            return 0
+        
+        config = self.configs[council_name]
+        parser = self._get_parser(config)
+        
+        start_time = time.time()
+        applications_found = 0
+        
+        try:
+            self.db.log_activity(council_name, "INFO", "Starting scrape")
+            
+            timeout = aiohttp.ClientTimeout(total=30)
+            connector = aiohttp.TCPConnector(limit=10)
+            
+            async with aiohttp.ClientSession(
+                timeout=timeout,
+                connector=connector,
+                headers=config.custom_headers or {}
+            ) as session:
+                
+                # Fetch the search page
+                async with session.get(config.url) as response:
+                    if response.status != 200:
+                        raise Exception(f"HTTP {response.status}: {response.reason}")
+                    
+                    html = await response.text()
+                    
+                applications = await parser.parse_applications(html, config.url)
+                applications_found = len(applications)
+                
+                if applications:
+                    self.db.save_applications(applications)
+                    logger.info(f"{council_name}: Found {applications_found} applications")
+                else:
+                    logger.warning(f"{council_name}: No applications found")
+                
+                response_time = time.time() - start_time
+                self.db.update_council_status(
+                    council_name, "success", applications_found, None, response_time
+                )
+                self.db.log_activity(council_name, "INFO", f"Scrape completed: {applications_found} applications")
+                
+                await asyncio.sleep(config.rate_limit)
+                
+        except Exception as e:
+            response_time = time.time() - start_time
+            error_msg = str(e)
+            logger.error(f"{council_name}: {error_msg}")
+            self.db.update_council_status(
+                council_name, "error", 0, error_msg, response_time
+            )
+            self.db.log_activity(council_name, "ERROR", error_msg)
+        
+        return applications_found
+    
+    async def scrape_all_councils(self, max_concurrent: int = 5) -> Dict[str, int]:
+        """Scraping all councils with concurrency control"""
+        semaphore = asyncio.Semaphore(max_concurrent)
+        results = {}
+        
+        async def scrape_with_semaphore(council_name: str):
+            async with semaphore:
+                count = await self.scrape_council(council_name)
+                results[council_name] = count
+                return count
+        
+        logger.info(f"Starting to scrape {len(self.configs)} councils with max concurrency {max_concurrent}")
+        
+        tasks = [scrape_with_semaphore(name) for name in self.configs.keys()]
+        await asyncio.gather(*tasks, return_exceptions=True)
+        
+        total_applications = sum(results.values())
+        logger.info(f"Scraping completed. Total applications found: {total_applications}")
+        
+        return results
+    
+    def export_data(self, format_type: str = "csv", filename: str = None) -> str:
+        """Exporting scraped data to various formats"""
+        if not filename:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"uk_planning_data_{timestamp}.{format_type}"
+        
+        with sqlite3.connect(self.db.db_path) as conn:
+            df = pd.read_sql_query("SELECT * FROM planning_applications ORDER BY council_name, date_submitted DESC", conn)
+        
+        if format_type.lower() == "csv":
+            df.to_csv(filename, index=False)
+        elif format_type.lower() == "json":
+            df.to_json(filename, orient="records", indent=2)
+        elif format_type.lower() == "excel":
+            df.to_excel(filename, index=False, sheet_name="Planning Applications")
+        else:
+            raise ValueError(f"Unsupported format: {format_type}")
+        
+        logger.info(f"Data exported to {filename} ({len(df)} records)")
+        return filename
+    
+    def get_statistics(self) -> Dict[str, Any]:
+        """Getting comprehensive statistics about scraped data"""
+        with sqlite3.connect(self.db.db_path) as conn:
+            stats = {}
+            
+            cursor = conn.execute("SELECT COUNT(*) FROM planning_applications")
+            stats['total_applications'] = cursor.fetchone()[0]
+            
+            cursor = conn.execute("SELECT COUNT(DISTINCT council_name) FROM planning_applications")
+            stats['councils_with_data'] = cursor.fetchone()[0]
+            
+            cursor = conn.execute("SELECT COUNT(*) FROM council_status WHERE status = 'success'")
+            stats['successful_scrapes'] = cursor.fetchone()[0]
+            
+            cursor = conn.execute("SELECT COUNT(*) FROM council_status WHERE status = 'error'")
+            stats['failed_scrapes'] = cursor.fetchone()[0]
+            
+            cursor = conn.execute("SELECT status, COUNT(*) FROM planning_applications GROUP BY status")
+            stats['by_status'] = dict(cursor.fetchall())
+            
+            cursor = conn.execute("SELECT council_name, COUNT(*) FROM planning_applications GROUP BY council_name ORDER BY COUNT(*) DESC LIMIT 10")
+            stats['top_councils'] = dict(cursor.fetchall())
+            
+            cursor = conn.execute("SELECT DATE(scraped_at), COUNT(*) FROM planning_applications WHERE DATE(scraped_at) >= DATE('now', '-7 days') GROUP BY DATE(scraped_at)")
+            stats['daily_scrapes'] = dict(cursor.fetchall())
+            
+            return stats
+
+
+class APIServer:
+    """Simple API server for the scraping system"""
+    
+    def __init__(self, scraper: CouncilScraper, port: int = 8080):
+        self.scraper = scraper
+        self.port = port
+        self.app = None
+    
+    def create_app(self):
+        """Creating FastAPI application"""
+        try:
+            from fastapi import FastAPI, HTTPException, BackgroundTasks
+            from fastapi.responses import FileResponse, JSONResponse
+            import uvicorn
+            
+            app = FastAPI(title="UK Council Planning Data Scraper API", version="1.0.0")
+            
+            @app.get("/")
+            async def root():
+                return {"message": "UK Council Planning Data Scraper API", "version": "1.0.0"}
+            
+            @app.get("/councils")
+            async def get_councils():
+                """Getting list of all councils"""
+                return list(self.scraper.configs.keys())
+            
+            @app.post("/scrape/{council_name}")
+            async def scrape_council(council_name: str, background_tasks: BackgroundTasks):
+                """Scraping a specific council"""
+                if council_name not in self.scraper.configs:
+                    raise HTTPException(status_code=404, detail=f"Council {council_name} not found")
+                
+                background_tasks.add_task(self.scraper.scrape_council, council_name)
+                return {"message": f"Scraping started for {council_name}"}
+            
+            @app.post("/scrape/all")
+            async def scrape_all(background_tasks: BackgroundTasks, max_concurrent: int = 5):
+                """Scraping all councils"""
+                background_tasks.add_task(self.scraper.scrape_all_councils, max_concurrent)
+                return {"message": "Scraping started for all councils"}
+            
+            @app.get("/statistics")
+            async def get_statistics():
+                """Getting scraping statistics"""
+                return self.scraper.get_statistics()
+            
+            @app.get("/export/{format_type}")
+            async def export_data(format_type: str):
+                """Exporting data in specified format"""
+                try:
+                    filename = self.scraper.export_data(format_type)
+                    return FileResponse(filename, filename=filename)
+                except Exception as e:
+                    raise HTTPException(status_code=400, detail=str(e))
+            
+            @app.get("/status")
+            async def get_status():
+                """Getting system status"""
+                with sqlite3.connect(self.scraper.db.db_path) as conn:
+                    cursor = conn.execute("""
+                        SELECT council_name, status, last_scraped, applications_found, error_message 
+                        FROM council_status ORDER BY last_scraped DESC
+                    """)
+                    status_data = [
+                        {
+                            "council": row[0],
+                            "status": row[1],
+                            "last_scraped": row[2],
+                            "applications_found": row[3],
+                            "error_message": row[4]
+                        }
+                        for row in cursor.fetchall()
+                    ]
+                return status_data
+            
+            self.app = app
+            return app
+        
+        except ImportError:
+            logger.warning("FastAPI not available. API server disabled.")
+            return None
+    
+    def run(self):
+        """Running the API server"""
+        if not self.app:
+            self.create_app()
+        
+        if self.app:
+            import uvicorn
+            uvicorn.run(self.app, host="0.0.0.0", port=self.port)
+
+
+class ConfigManager:
+    """Managing configuration files and custom extraction rules"""
+    
+    def __init__(self, config_dir: str = "config"):
+        self.config_dir = Path(config_dir)
+        self.config_dir.mkdir(exist_ok=True)
+    
+    def save_extraction_rules(self, council_name: str, rules: Dict[str, Any]):
+        """Saving custom extraction rules for a council"""
+        config_file = self.config_dir / f"{council_name.lower().replace(' ', '_')}.yaml"
+        with open(config_file, 'w') as f:
+            yaml.dump(rules, f, default_flow_style=False)
+    
+    def load_extraction_rules(self, council_name: str) -> Optional[Dict[str, Any]]:
+        """Loading custom extraction rules for a council"""
+        config_file = self.config_dir / f"{council_name.lower().replace(' ', '_')}.yaml"
+        if config_file.exists():
+            with open(config_file, 'r') as f:
+                return yaml.safe_load(f)
+        return None
+    
+    def create_sample_config(self, council_name: str):
+        """Creating a sample configuration file"""
+        sample_config = {
+            "selectors": {
+                "application_rows": ["tr.searchresult", "div.application-row"],
+                "application_id": ["a.application-link", "span.ref-number"],
+                "address": ["td.address", "div.location"],
+                "description": ["td.description", "div.proposal"],
+                "status": ["td.status", "span.decision"],
+                "date_submitted": ["td.date-received", "span.submitted-date"]
+            },
+            "patterns": {
+                "application_id": r"\d{2}\/\d{4,5}\/\w+",
+                "date_format": "%d/%m/%Y"
+            },
+            "pagination": {
+                "enabled": True,
+                "next_page_selector": "a.next",
+                "max_pages": 50
+            },
+            "rate_limit": 2.0,
+            "headers": {
+                "User-Agent": "Mozilla/5.0 (Planning Data Research)"
+            }
+        }
+        
+        self.save_extraction_rules(council_name, sample_config)
+        return sample_config
+
+
+class DataValidator:
+    """Validating and cleaning scraped data"""
+    
+    def __init__(self):
+        self.validation_rules = {
+            "application_id": {
+                "required": True,
+                "patterns": [
+                    r"\d{2}\/\d{4,5}\/\w+",  # 23/12345/FUL
+                    r"\w{2,4}\d{4,6}",       # ABC123456
+                    r"\d{4}\/\d{4,6}",       # 2023/12345
+                ]
+            },
+            "address": {
+                "required": False,
+                "min_length": 10,
+                "max_length": 500
+            },
+            "status": {
+                "required": False,
+                "valid_values": [
+                    "Pending", "Approved", "Refused", "Withdrawn",
+                    "Under Review", "Granted", "Dismissed", "Invalid"
+                ]
+            }
+        }
+    
+    def validate_application(self, app: PlanningApplication) -> List[str]:
+        """Validating a planning application and return list of errors"""
+        errors = []
+        
+        # Check application ID
+        if not app.application_id:
+            errors.append("Missing application ID")
+        else:
+            valid_id = False
+            for pattern in self.validation_rules["application_id"]["patterns"]:
+                if re.match(pattern, app.application_id):
+                    valid_id = True
+                    break
+            if not valid_id:
+                errors.append(f"Invalid application ID format: {app.application_id}")
+        
+        if app.address and len(app.address) < self.validation_rules["address"]["min_length"]:
+            errors.append("Address too short")
+        
+        if app.status and app.status not in self.validation_rules["status"]["valid_values"]:
+            # Try to normalize status
+            normalized_status = self.normalize_status(app.status)
+            if normalized_status:
+                app.status = normalized_status
+            else:
+                errors.append(f"Unknown status: {app.status}")
+        
+        if app.date_submitted and not self.is_valid_date(app.date_submitted):
+            errors.append(f"Invalid submission date: {app.date_submitted}")
+        
+        return errors
+    
+    def normalize_status(self, status: str) -> Optional[str]:
+        """Normalizing status values to standard format"""
+        status_mapping = {
+            "approved": "Approved",
+            "granted": "Approved",
+            "permission granted": "Approved",
+            "refused": "Refused",
+            "rejected": "Refused",
+            "declined": "Refused",
+            "pending": "Pending",
+            "awaiting decision": "Pending",
+            "under consideration": "Under Review",
+            "withdrawn": "Withdrawn",
+            "invalid": "Invalid"
+        }
+        
+        normalized = status_mapping.get(status.lower().strip())
+        return normalized
+    
+    def is_valid_date(self, date_str: str) -> bool:
+        """Check if date string is valid"""
+        try:
+            datetime.fromisoformat(date_str)
+            return True
+        except ValueError:
+            return False
+
+
+class ReportGenerator:
+    """Generating comprehensive reports from scraped data"""
+    
+    def __init__(self, scraper: CouncilScraper):
+        self.scraper = scraper
+    
+    def generate_summary_report(self) -> str:
+        """Generate a comprehensive summary report"""
+        stats = self.scraper.get_statistics()
+        
+        report = f"""
+UK COUNCIL PLANNING DATA SCRAPING REPORT
+Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+{'='*60}
+
+OVERVIEW
+--------
+Total Applications Scraped: {stats.get('total_applications', 0):,}
+Councils with Data: {stats.get('councils_with_data', 0)}
+Successful Scrapes: {stats.get('successful_scrapes', 0)}
+Failed Scrapes: {stats.get('failed_scrapes', 0)}
+
+"""
+        
+        for status, count in stats.get('by_status', {}).items():
+            report += f"{status}: {count:,}\n"
+        
+        report += "\nTOP 10 COUNCILS BY APPLICATIONS\n"
+        report += "-------------------------------\n"
+        
+        for council, count in stats.get('top_councils', {}).items():
+            report += f"{council}: {count:,}\n"
+        
+        report += "\nRECENT ACTIVITY (Last 7 Days)\n"
+        report += "-----------------------------\n"
+        
+        for date, count in stats.get('daily_scrapes', {}).items():
+            report += f"{date}: {count:,} applications\n"
+        
+        return report
+    
+    def generate_error_report(self) -> str:
+        """Generate report of scraping errors and issues"""
+        with sqlite3.connect(self.scraper.db.db_path) as conn:
+            # Get failed councils
+            cursor = conn.execute("""
+                SELECT council_name, error_message, last_scraped, response_time
+                FROM council_status 
+                WHERE status = 'error'
+                ORDER BY last_scraped DESC
+            """)
+            failed_councils = cursor.fetchall()
+            
+            # Get error logs
+            cursor = conn.execute("""
+                SELECT timestamp, council_name, message, details
+                FROM scraping_logs
+                WHERE level = 'ERROR'
+                ORDER BY timestamp DESC
+                LIMIT 50
+            """)
+            error_logs = cursor.fetchall()
+        
+        report = f"""
+ERROR REPORT
+Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+{'='*50}
+
+FAILED COUNCILS ({len(failed_councils)})
+-----------------
+"""
+        
+        for council, error, last_scraped, response_time in failed_councils:
+            report += f"\n{council}:\n"
+            report += f"  Error: {error}\n"
+            report += f"  Last Attempt: {last_scraped}\n"
+            report += f"  Response Time: {response_time:.2f}s\n"
+        
+        report += f"\nRECENT ERRORS ({len(error_logs)})\n"
+        report += "-------------\n"
+        
+        for timestamp, council, message, details in error_logs:
+            report += f"\n[{timestamp}] {council}: {message}\n"
+            if details:
+                report += f"  Details: {details}\n"
+        
+        return report
+
+
+def create_cli():
+    """Create command-line interface"""
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="UK Council Planning Data Scraper")
+    
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+    
+    scrape_parser = subparsers.add_parser('scrape', help='Scrape planning data')
+    scrape_parser.add_argument('--council', help='Specific council to scrape')
+    scrape_parser.add_argument('--all', action='store_true', help='Scrape all councils')
+    scrape_parser.add_argument('--concurrent', type=int, default=5, help='Max concurrent scrapes')
+    
+    export_parser = subparsers.add_parser('export', help='Export scraped data')
+    export_parser.add_argument('format', choices=['csv', 'json', 'excel'], help='Export format')
+    export_parser.add_argument('--filename', help='Output filename')
+    
+    subparsers.add_parser('status', help='Show scraping status')
+    
+    report_parser = subparsers.add_parser('report', help='Generate reports')
+    report_parser.add_argument('type', choices=['summary', 'errors'], help='Report type')
+    
+    api_parser = subparsers.add_parser('api', help='Start API server')
+    api_parser.add_argument('--port', type=int, default=8080, help='API server port')
+    
+    config_parser = subparsers.add_parser('config', help='Manage configurations')
+    config_parser.add_argument('action', choices=['create', 'edit'], help='Config action')
+    config_parser.add_argument('--council', required=True, help='Council name')
+    
+    return parser
+
+
+async def main():
+    """Main entry point"""
+    parser = create_cli()
+    args = parser.parse_args()
+    
+    scraper = CouncilScraper()
+    
+    if args.command == 'scrape':
+        if args.council:
+            count = await scraper.scrape_council(args.council)
+            print(f"Scraped {count} applications from {args.council}")
+        elif args.all:
+            results = await scraper.scrape_all_councils(args.concurrent)
+            total = sum(results.values())
+            print(f"Scraped {total} total applications from {len(results)} councils")
+        else:
+            parser.print_help()
+    
+    elif args.command == 'export':
+        filename = scraper.export_data(args.format, args.filename)
+        print(f"Data exported to {filename}")
+    
+    elif args.command == 'status':
+        stats = scraper.get_statistics()
+        print(f"Total Applications: {stats['total_applications']:,}")
+        print(f"Councils with Data: {stats['councils_with_data']}")
+        print(f"Successful Scrapes: {stats['successful_scrapes']}")
+        print(f"Failed Scrapes: {stats['failed_scrapes']}")
+    
+    elif args.command == 'report':
+        report_gen = ReportGenerator(scraper)
+        if args.type == 'summary':
+            report = report_gen.generate_summary_report()
+        else:  # errors
+            report = report_gen.generate_error_report()
+        print(report)
+    
+    elif args.command == 'api':
+        api_server = APIServer(scraper, args.port)
+        api_server.run()
+    
+    elif args.command == 'config':
+        config_manager = ConfigManager()
+        if args.action == 'create':
+            config = config_manager.create_sample_config(args.council)
+            print(f"Sample configuration created for {args.council}")
+    
+    else:
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    import sys
+    
+    if len(sys.argv) == 1:
+        print("UK Council Planning Data Scraper")
+        print("Usage examples:")
+        print("  python scraper.py scrape --all")
+        print("  python scraper.py scrape --council Fylde")
+        print("  python scraper.py export csv")
+        print("  python scraper.py status")
+        print("  python scraper.py report summary")
+        print("  python scraper.py api --port 8080")
+    else:
+        asyncio.run(main())

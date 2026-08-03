@@ -1,0 +1,3538 @@
+{
+  "regions": {
+    "asia": {
+      "name": "Asia",
+      "totalCountries": 33,
+      "countries": [
+        {
+            "countryCode": "DJ",
+            "countryName": "Djibouti",
+            "capital": "Djibouti City",
+            "currency": "DJF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "French/Arabic"
+              },
+              {
+                "name": "Local agencies",
+                "type": "Private",
+                "dataTypes": ["Limited listings"],
+                "accessLevel": "Limited",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "EG",
+            "countryName": "Egypt",
+            "capital": "Cairo",
+            "currency": "EGP",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Egyptian Real Estate Tax Authority",
+                "type": "Government",
+                "url": "http://www.reta.gov.eg",
+                "dataTypes": ["Property Tax Records", "Valuation"],
+                "accessLevel": "Public",
+                "language": "Arabic/English"
+              },
+              {
+                "name": "Property Finder Egypt",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English/Arabic"
+              },
+              {
+                "name": "Aqar Egypt",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Trends"],
+                "accessLevel": "Public",
+                "language": "Arabic"
+              },
+              {
+                "name": "JLL Egypt",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "2.5%",
+              "propertyTaxRate": "10%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "GQ",
+            "countryName": "Equatorial Guinea",
+            "capital": "Malabo",
+            "currency": "XAF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Infrastructure",
+                "type": "Government",
+                "dataTypes": ["Limited records"],
+                "accessLevel": "Restricted",
+                "language": "Spanish"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "ER",
+            "countryName": "Eritrea",
+            "capital": "Asmara",
+            "currency": "ERN",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Limited international access",
+                "type": "N/A",
+                "dataTypes": ["Not publicly available"],
+                "accessLevel": "Closed",
+                "language": "Tigrinya/Arabic"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Highly restricted",
+              "transferTax": "N/A",
+              "propertyTaxRate": "N/A",
+              "registrationRequired": false
+            }
+          },
+          {
+            "countryCode": "SZ",
+            "countryName": "Eswatini",
+            "capital": "Mbabane",
+            "currency": "SZL",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Housing and Urban Development",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Property Eswatini",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Limited",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - leasehold only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "ET",
+            "countryName": "Ethiopia",
+            "capital": "Addis Ababa",
+            "currency": "ETB",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Ethiopian Mapping Agency",
+                "type": "Government",
+                "dataTypes": ["Land Records", "Cadastral Data"],
+                "accessLevel": "Public",
+                "language": "Amharic/English"
+              },
+              {
+                "name": "Zemen Real Estate",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "Amharic/English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Not allowed for land",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "GA",
+            "countryName": "Gabon",
+            "capital": "Libreville",
+            "currency": "XAF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "National Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry"],
+                "accessLevel": "Restricted",
+                "language": "French"
+              },
+              {
+                "name": "Local agencies",
+                "type": "Private",
+                "dataTypes": ["Limited listings"],
+                "accessLevel": "Limited",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "GM",
+            "countryName": "Gambia",
+            "capital": "Banjul",
+            "currency": "GMD",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Department of Lands and Surveys",
+                "type": "Government",
+                "dataTypes": ["Land Registry"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Property Gambia",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Limited",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "GH",
+            "countryName": "Ghana",
+            "capital": "Accra",
+            "currency": "GHS",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Lands Commission",
+                "type": "Government",
+                "url": "http://www.lc.gov.gh",
+                "dataTypes": ["Land Registry", "Property Titles"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Meqasa",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Tonaton",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed - leasehold only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "GN",
+            "countryName": "Guinea",
+            "capital": "Conakry",
+            "currency": "GNF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "French"
+              },
+              {
+                "name": "Local brokers",
+                "type": "Private",
+                "dataTypes": ["Limited listings"],
+                "accessLevel": "Limited",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "GW",
+            "countryName": "Guinea-Bissau",
+            "capital": "Bissau",
+            "currency": "XOF",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Infrastructure",
+                "type": "Government",
+                "dataTypes": ["Minimal records"],
+                "accessLevel": "Restricted",
+                "language": "Portuguese"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "KE",
+            "countryName": "Kenya",
+            "capital": "Nairobi",
+            "currency": "KES",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Ministry of Lands and Physical Planning",
+                "type": "Government",
+                "url": "http://www.lands.go.ke",
+                "dataTypes": ["Land Registry", "Title Deeds", "Cadastral Maps"],
+                "accessLevel": "Public",
+                "language": "English/Swahili"
+              },
+              {
+                "name": "Property Kenya",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "BuyRentKenya",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Rental Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Knight Frank Kenya",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "4%",
+              "propertyTaxRate": "Variable by county",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "LS",
+            "countryName": "Lesotho",
+            "capital": "Maseru",
+            "currency": "LSL",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land Administration Authority",
+                "type": "Government",
+                "dataTypes": ["Land Records"],
+                "accessLevel": "Public",
+                "language": "English/Sesotho"
+              },
+              {
+                "name": "Local agencies",
+                "type": "Private",
+                "dataTypes": ["Limited listings"],
+                "accessLevel": "Limited",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - leasehold only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "LR",
+            "countryName": "Liberia",
+            "capital": "Monrovia",
+            "currency": "LRD",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Liberia Land Authority",
+                "type": "Government",
+                "dataTypes": ["Land Registry"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Local brokers",
+                "type": "Private",
+                "dataTypes": ["Limited listings"],
+                "accessLevel": "Limited",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "LY",
+            "countryName": "Libya",
+            "capital": "Tripoli",
+            "currency": "LYD",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Limited due to instability",
+                "type": "N/A",
+                "dataTypes": ["Minimal data available"],
+                "accessLevel": "Restricted",
+                "language": "Arabic"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Complex due to instability",
+              "transferTax": "N/A",
+              "propertyTaxRate": "N/A",
+              "registrationRequired": false
+            }
+          },
+          {
+            "countryCode": "MG",
+            "countryName": "Madagascar",
+            "capital": "Antananarivo",
+            "currency": "MGA",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land Registry Office",
+                "type": "Government",
+                "dataTypes": ["Property Registry"],
+                "accessLevel": "Public",
+                "language": "Malagasy/French"
+              },
+              {
+                "name": "Immobilier.mg",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "MW",
+            "countryName": "Malawi",
+            "capital": "Lilongwe",
+            "currency": "MWK",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Lands",
+                "type": "Government",
+                "dataTypes": ["Land Registry"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Malawi Property",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Limited",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - leasehold only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "ML",
+            "countryName": "Mali",
+            "capital": "Bamako",
+            "currency": "XOF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "National Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "French"
+              },
+              {
+                "name": "Local agencies",
+                "type": "Private",
+                "dataTypes": ["Limited listings"],
+                "accessLevel": "Limited",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "MR",
+            "countryName": "Mauritania",
+            "capital": "Nouakchott",
+            "currency": "MRU",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "Arabic/French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "MU",
+            "countryName": "Mauritius",
+            "capital": "Port Louis",
+            "currency": "MUR",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Ministry of Housing and Land Use Planning",
+                "type": "Government",
+                "url": "http://housing.govmu.org",
+                "dataTypes": ["Property Records", "Land Registry"],
+                "accessLevel": "Public",
+                "language": "English/French"
+              },
+              {
+                "name": "Lexpressproperty.com",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English/French"
+              },
+              {
+                "name": "JLL Mauritius",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports"],
+                "accessLevel": "Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed in designated schemes",
+              "transferTax": "5%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "MA",
+            "countryName": "Morocco",
+            "capital": "Rabat",
+            "currency": "MAD",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "National Agency for Land Conservation",
+                "type": "Government",
+                "url": "http://www.ancfcc.gov.ma",
+                "dataTypes": ["Land Registry", "Property Titles"],
+                "accessLevel": "Public",
+                "language": "Arabic/French"
+              },
+              {
+                "name": "Mubawab",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "Arabic/French/English"
+              },
+              {
+                "name": "Avito Morocco",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "Arabic/French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "4-6%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "MZ",
+            "countryName": "Mozambique",
+            "capital": "Maputo",
+            "currency": "MZN",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "National Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry"],
+                "accessLevel": "Public",
+                "language": "Portuguese"
+              },
+              {
+                "name": "OLX Mozambique",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "Portuguese"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Land leasehold only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "NA",
+            "countryName": "Namibia",
+            "capital": "Windhoek",
+            "currency": "NAD",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Deeds Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Property Namibia",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "NE",
+            "countryName": "Niger",
+            "capital": "Niamey",
+            "currency": "XOF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "NG",
+            "countryName": "Nigeria",
+            "capital": "Abuja",
+            "currency": "NGN",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Federal Ministry of Lands, Housing and Urban Development",
+                "type": "Government",
+                "dataTypes": ["Land Records"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "PropertyPro",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Private Property Nigeria",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Analysis"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "Varies by state",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "CG",
+            "countryName": "Republic of the Congo",
+            "capital": "Brazzaville",
+            "currency": "XAF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "RW",
+            "countryName": "Rwanda",
+            "capital": "Kigali",
+            "currency": "RWF",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Rwanda Land Management and Use Authority",
+                "type": "Government",
+                "url": "http://www.rlma.rw",
+                "dataTypes": ["Land Registry", "Property Titles"],
+                "accessLevel": "Public",
+                "language": "Kinyarwanda/English/French"
+              },
+              {
+                "name": "Property Rwanda",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Lamudi Rwanda",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed - leasehold",
+              "transferTax": "Varies",
+              "propertyTaxRate": "0.1%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "ST",
+            "countryName": "São Tomé and Príncipe",
+            "capital": "São Tomé",
+            "currency": "STN",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Limited records"],
+                "accessLevel": "Restricted",
+                "language": "Portuguese"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "SN",
+            "countryName": "Senegal",
+            "capital": "Dakar",
+            "currency": "XOF",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry"],
+                "accessLevel": "Public",
+                "language": "French"
+              },
+              {
+                "name": "Expat-Dakar",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "French/English"
+              },
+              {
+                "name": "Seneglobe",
+                "type": "Online Portal",
+                "dataTypes": ["Listings"],
+                "accessLevel": "Public",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "SC",
+            "countryName": "Seychelles",
+            "capital": "Victoria",
+            "currency": "SCR",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Land Registration",
+                "type": "Government",
+                "dataTypes": ["Property Registry"],
+                "accessLevel": "Public",
+                "language": "English/French"
+              },
+              {
+                "name": "Property Seychelles",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "5%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "SL",
+            "countryName": "Sierra Leone",
+            "capital": "Freetown",
+            "currency": "SLL",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Lands",
+                "type": "Government",
+                "dataTypes": ["Land Registry"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - leasehold only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "SO",
+            "countryName": "Somalia",
+            "capital": "Mogadishu",
+            "currency": "SOS",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Limited formal infrastructure",
+                "type": "N/A",
+                "dataTypes": ["Minimal data"],
+                "accessLevel": "Restricted",
+                "language": "Somali/Arabic"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Complex due to instability",
+              "transferTax": "N/A",
+              "propertyTaxRate": "N/A",
+              "registrationRequired": false
+            }
+          },
+          {
+            "countryCode": "ZA",
+            "countryName": "South Africa",
+            "capital": "Pretoria",
+            "currency": "ZAR",
+            "dataAccessibility": "Very High",
+            "dataSources": [
+              {
+                "name": "Deeds Office",
+                "type": "Government",
+                "url": "http://www.deeds.gov.za",
+                "dataTypes": ["Property Registry", "Title Deeds", "Transaction Data"],
+                "accessLevel": "Public",
+                "language": "English/Afrikaans"
+              },
+              {
+                "name": "Property24",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data", "Price Trends"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Private Property",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Analysis"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "JLL South Africa",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "Up to 13%",
+              "propertyTaxRate": "Variable by municipality",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "SD",
+            "countryName": "Sudan",
+            "capital": "Khartoum",
+            "currency": "SDG",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Infrastructure",
+                "type": "Government",
+                "dataTypes": ["Limited records"],
+                "accessLevel": "Restricted",
+                "language": "Arabic"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "TZ",
+            "countryName": "Tanzania",
+            "capital": "Dodoma",
+            "currency": "TZS",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Ministry of Lands, Housing and Human Settlements Development",
+                "type": "Government",
+                "dataTypes": ["Land Registry", "Property Records"],
+                "accessLevel": "Public",
+                "language": "Swahili/English"
+              },
+              {
+                "name": "ZoomTanzania",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "BuyRentTanzania",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - leasehold only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "TG",
+            "countryName": "Togo",
+            "capital": "Lomé",
+            "currency": "XOF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "TN",
+            "countryName": "Tunisia",
+            "capital": "Tunis",
+            "currency": "TND",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Land Registry Office",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "Arabic/French"
+              },
+              {
+                "name": "Tayara.tn",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "Arabic/French"
+              },
+              {
+                "name": "Mubawab Tunisia",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "Arabic/French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "5%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "UG",
+            "countryName": "Uganda",
+            "capital": "Kampala",
+            "currency": "UGX",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Ministry of Lands, Housing and Urban Development",
+                "type": "Government",
+                "dataTypes": ["Land Registry", "Property Titles"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Lamudi Uganda",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Property Uganda",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed - leasehold",
+              "transferTax": "1%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "ZM",
+            "countryName": "Zambia",
+            "capital": "Lusaka",
+            "currency": "ZMW",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Ministry of Lands and Natural Resources",
+                "type": "Government",
+                "dataTypes": ["Land Registry"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Property Zambia",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "ZoomZambia",
+                "type": "Online Portal",
+                "dataTypes": ["Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed - leasehold",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "ZW",
+            "countryName": "Zimbabwe",
+            "capital": "Harare",
+            "currency": "ZWL",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Deeds Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Property Zimbabwe",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          }
+        ]
+      },
+      "southAmerica": {
+        "name": "South America & Central America",
+        "totalCountries": 11,
+        "countries": [
+          {
+            "countryCode": "AR",
+            "countryName": "Argentina",
+            "capital": "Buenos Aires",
+            "currency": "ARS",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Registro de la Propiedad Inmueble",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "ZonaProp",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Properati",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Analysis"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "CBRE Argentina",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "Spanish/English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "1.5-3%",
+              "propertyTaxRate": "Variable by province",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "BO",
+            "countryName": "Bolivia",
+            "capital": "La Paz/Sucre",
+            "currency": "BOB",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "National Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Infocasas Bolivia",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Local brokers",
+                "type": "Private",
+                "dataTypes": ["Market Data"],
+                "accessLevel": "Limited",
+                "language": "Spanish"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "3%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "BR",
+            "countryName": "Brazil",
+            "capital": "Brasília",
+            "currency": "BRL",
+            "dataAccessibility": "Very High",
+            "dataSources": [
+              {
+                "name": "Registro de Imóveis",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds", "Transaction Data"],
+                "accessLevel": "Public",
+                "language": "Portuguese"
+              },
+              {
+                "name": "VivaReal",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data", "Price Indices"],
+                "accessLevel": "Public",
+                "language": "Portuguese"
+              },
+              {
+                "name": "ZAP Imóveis",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Analysis"],
+                "accessLevel": "Public",
+                "language": "Portuguese"
+              },
+              {
+                "name": "JLL Brazil",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Investment Analysis"],
+                "accessLevel": "Public/Subscription",
+                "language": "English/Portuguese"
+              },
+              {
+                "name": "CBRE Brazil",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Research", "Valuation"],
+                "accessLevel": "Subscription",
+                "language": "English/Portuguese"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "2-4%",
+              "propertyTaxRate": "Variable by municipality",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "CL",
+            "countryName": "Chile",
+            "capital": "Santiago",
+            "currency": "CLP",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Conservador de Bienes Raíces",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Portal Inmobiliario",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "JLL Chile",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "Spanish/English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "CO",
+            "countryName": "Colombia",
+            "capital": "Bogotá",
+            "currency": "COP",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Superintendencia de Notariado y Registro",
+                "type": "Government",
+                "url": "https://www.supernotariado.gov.co",
+                "dataTypes": ["Property Registry", "Transaction Data"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Fincaraíz",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Properati Colombia",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Analysis"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "JLL Colombia",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "Spanish/English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "1-2%",
+              "propertyTaxRate": "0.3-3.3%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "EC",
+            "countryName": "Ecuador",
+            "capital": "Quito",
+            "currency": "USD",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Property Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Plusvalia.com",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Local agencies",
+                "type": "Private",
+                "dataTypes": ["Market Data"],
+                "accessLevel": "Limited",
+                "language": "Spanish"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "1%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "GD",
+            "countryName": "Grenada",
+            "capital": "St. George's",
+            "currency": "XCD",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Terra Caribbean",
+                "type": "Commercial Provider",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "10%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "HN",
+            "countryName": "Honduras",
+            "capital": "Tegucigalpa",
+            "currency": "HNL",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Property Institute",
+                "type": "Government",
+                "dataTypes": ["Property Registry"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Encuentra24 Honduras",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Local brokers",
+                "type": "Private",
+                "dataTypes": ["Market Data"],
+                "accessLevel": "Limited",
+                "language": "Spanish"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "PY",
+            "countryName": "Paraguay",
+            "capital": "Asunción",
+            "currency": "PYG",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Dirección General de los Registros Públicos",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Properati Paraguay",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "PE",
+            "countryName": "Peru",
+            "capital": "Lima",
+            "currency": "PEN",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "SUNARP (National Superintendency of Public Registries)",
+                "type": "Government",
+                "url": "https://www.sunarp.gob.pe",
+                "dataTypes": ["Property Registry", "Title Deeds", "Transaction Data"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Adondevivir",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "Urbania",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Analysis"],
+                "accessLevel": "Public",
+                "language": "Spanish"
+              },
+              {
+                "name": "JLL Peru",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "Spanish/English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "3%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "TT",
+            "countryName": "Trinidad and Tobago",
+            "capital": "Port of Spain",
+            "currency": "TTD",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Terra Caribbean",
+                "type": "Commercial Provider",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Local agencies",
+                "type": "Private",
+                "dataTypes": ["Market Data"],
+                "accessLevel": "Limited",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "7.5%",
+              "propertyTaxRate": "3%",
+              "registrationRequired": true
+            }
+          }
+        ]
+      },
+      "oceania": {
+        "name": "Oceania",
+        "totalCountries": 7,
+        "countries": [
+          {
+            "countryCode": "AU",
+            "countryName": "Australia",
+            "capital": "Canberra",
+            "currency": "AUD",
+            "dataAccessibility": "Very High",
+            "dataSources": [
+              {
+                "name": "CoreLogic",
+                "type": "Commercial Provider",
+                "url": "https://www.corelogic.com.au",
+                "dataTypes": ["Property Data", "Market Analytics", "Transaction History", "Valuation"],
+                "accessLevel": "Subscription",
+                "language": "English"
+              },
+              {
+                "name": "Domain",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data", "Price Guides"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Realestate.com.au",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Trends", "Suburb Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "JLL Australia",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Investment Research", "Commercial Analytics"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              },
+              {
+                "name": "CBRE Australia",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Research", "Valuation", "Investment Reports"],
+                "accessLevel": "Subscription",
+                "language": "English"
+              },
+              {
+                "name": "State Land Titles Offices",
+                "type": "Government",
+                "dataTypes": ["Property Titles", "Transaction Records"],
+                "accessLevel": "Public (Fee)",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with FIRB approval",
+              "transferTax": "Stamp duty varies by state (2-7%)",
+              "propertyTaxRate": "Land tax varies by state",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "FJ",
+            "countryName": "Fiji",
+            "capital": "Suva",
+            "currency": "FJD",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Housing Authority",
+                "type": "Government",
+                "dataTypes": ["Housing Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Local agencies",
+                "type": "Private",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Limited",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - leasehold for most land",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "KI",
+            "countryName": "Kiribati",
+            "capital": "Tarawa",
+            "currency": "AUD",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Lands and Mineral Resources",
+                "type": "Government",
+                "dataTypes": ["Limited records"],
+                "accessLevel": "Restricted",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Highly restricted",
+              "transferTax": "N/A",
+              "propertyTaxRate": "N/A",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "NZ",
+            "countryName": "New Zealand",
+            "capital": "Wellington",
+            "currency": "NZD",
+            "dataAccessibility": "Very High",
+            "dataSources": [
+              {
+                "name": "Land Information New Zealand (LINZ)",
+                "type": "Government",
+                "url": "https://www.linz.govt.nz",
+                "dataTypes": ["Property Titles", "Transaction Data", "Cadastral Maps"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "QV (Quotable Value)",
+                "type": "Commercial Provider",
+                "dataTypes": ["Property Valuations", "Market Data", "Analytics"],
+                "accessLevel": "Subscription",
+                "language": "English"
+              },
+              {
+                "name": "Trade Me Property",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Trends", "Price Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "JLL New Zealand",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Investment Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - requires OIO consent",
+              "transferTax": "None",
+              "propertyTaxRate": "Rates vary by council",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "PG",
+            "countryName": "Papua New Guinea",
+            "capital": "Port Moresby",
+            "currency": "PGK",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Department of Lands and Physical Planning",
+                "type": "Government",
+                "dataTypes": ["Land Registry"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Property PNG",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Limited",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - leasehold only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "SB",
+            "countryName": "Solomon Islands",
+            "capital": "Honiara",
+            "currency": "SBD",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Lands, Housing and Survey",
+                "type": "Government",
+                "dataTypes": ["Land Records"],
+                "accessLevel": "Restricted",
+                "language": "English"
+              },
+              {
+                "name": "Local agencies",
+                "type": "Private",
+                "dataTypes": ["Limited listings"],
+                "accessLevel": "Limited",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - leasehold only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "TO",
+            "countryName": "Tonga",
+            "capital": "Nuku'alofa",
+            "currency": "TOP",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Lands",
+                "type": "Government",
+                "dataTypes": ["Land Records"],
+                "accessLevel": "Restricted",
+                "language": "English/Tongan"
+              },
+              {
+                "name": "Local sources",
+                "type": "Private",
+                "dataTypes": ["Limited data"],
+                "accessLevel": "Limited",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Not allowed for land",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          }
+        ]
+      }
+    },
+    "dataCollectionMethodology": {
+      "phases": [
+        {
+          "phase": 1,
+          "name": "Research & Preparation",
+          "duration": "2-4 weeks",
+          "activities": [
+            "Identify and verify data sources for each country",
+            "Understand local regulations and restrictions",
+            "Establish partnerships with local agencies",
+            "Set up data collection infrastructure",
+            "Create country-specific collection protocols"
+          ]
+        },
+        {
+          "phase": 2,
+          "name": "Data Collection",
+          "duration": "Ongoing",
+          "activities": [
+            "Access government registries and cadastral databases",
+            "Utilize commercial data providers and subscriptions",
+            "Conduct field surveys and property inspections",
+            "Scrape and aggregate online property portals",
+            "Interview local brokers and market experts"
+          ]
+        },
+        {
+          "phase": 3,
+          "name": "Data Validation & Quality Control",
+          "duration": "Continuous",
+          "activities": [
+            "Cross-reference data from multiple sources",
+            "Standardize formats (currency, units, dates)",
+            "Flag and investigate anomalies",
+            "Document data provenance and confidence levels",
+            "Implement automated quality checks"
+          ]
+        },
+        {
+          "phase": 4,
+          "name": "Database Management",
+          "duration": "Ongoing",
+          "activities": [
+            "Store data in centralized database system",
+            "Implement regular update schedules",
+            "Maintain version control and audit trails",
+            "Develop API endpoints for data access",
+            "Create analytics and reporting dashboards"
+          ]
+        }
+      ]
+    },
+    "bestPractices": [
+      {
+        "category": "Data Standardization",
+        "practices": [
+          "Convert all currencies to USD with timestamp",
+          "Use square meters for all area measurements",
+          "Apply ISO 8601 format for dates (YYYY-MM-DD)",
+          "Standardize property type classifications",
+          "Normalize address formats per country"
+        ]
+      },
+      {
+        "category": "Quality Assurance",
+        "practices": [
+          "Require minimum 2 sources for critical data points",
+          "Flag data older than 6 months for review",
+          "Implement automated range checks for numerical values",
+          "Manual review for high-value properties (>$10M)",
+          "Regular audits of random sample (5% quarterly)"
+        ]
+      },
+      {
+        "category":
+            "countryCode": "AM",
+            "countryName": "Armenia",
+            "capital": "Yerevan",
+            "currency": "AMD",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "State Cadastre Committee",
+                "type": "Government",
+                "url": "https://www.e-cadastre.am",
+                "dataTypes": ["Land Registry", "Property Titles", "Cadastral Maps"],
+                "accessLevel": "Public",
+                "language": "Armenian/English"
+              },
+              {
+                "name": "Armenian Real Estate Association",
+                "type": "Industry Association",
+                "dataTypes": ["Market Reports", "Property Listings"],
+                "accessLevel": "Members/Public",
+                "language": "Armenian"
+              },
+              {
+                "name": "List.am",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Rental Rates"],
+                "accessLevel": "Public",
+                "language": "Armenian/English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "0.5%",
+              "propertyTaxRate": "0.1-0.3%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "BT",
+            "countryName": "Bhutan",
+            "capital": "Thimphu",
+            "currency": "BTN",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "National Land Commission",
+                "type": "Government",
+                "dataTypes": ["Land Records", "Property Registry"],
+                "accessLevel": "Restricted",
+                "language": "Dzongkha/English"
+              },
+              {
+                "name": "Ministry of Works and Human Settlement",
+                "type": "Government",
+                "dataTypes": ["Development Permits", "Building Codes"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Not allowed",
+              "transferTax": "Varies",
+              "propertyTaxRate": "N/A",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "BN",
+            "countryName": "Brunei",
+            "capital": "Bandar Seri Begawan",
+            "currency": "BND",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Department of Land",
+                "type": "Government",
+                "dataTypes": ["Land Titles", "Property Registry"],
+                "accessLevel": "Public",
+                "language": "Malay/English"
+              },
+              {
+                "name": "Brunei Property",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "3%",
+              "propertyTaxRate": "12%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "KH",
+            "countryName": "Cambodia",
+            "capital": "Phnom Penh",
+            "currency": "KHR",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Ministry of Land Management",
+                "type": "Government",
+                "dataTypes": ["Land Registry", "Property Titles"],
+                "accessLevel": "Public",
+                "language": "Khmer/English"
+              },
+              {
+                "name": "Realestate.com.kh",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Prices"],
+                "accessLevel": "Public",
+                "language": "English/Khmer"
+              },
+              {
+                "name": "CBRE Cambodia",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Valuation Data"],
+                "accessLevel": "Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed (above ground floor)",
+              "transferTax": "4%",
+              "propertyTaxRate": "0.1%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "CN",
+            "countryName": "China",
+            "capital": "Beijing",
+            "currency": "CNY",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "China Index Academy",
+                "type": "Research Institute",
+                "url": "http://www.fangchan.com",
+                "dataTypes": ["Market Data", "Property Indices", "Transaction Data"],
+                "accessLevel": "Subscription",
+                "language": "Chinese/English"
+              },
+              {
+                "name": "CRIC (China Real Estate Information Corp)",
+                "type": "Commercial Provider",
+                "dataTypes": ["Property Data", "Developer Information", "Sales Data"],
+                "accessLevel": "Subscription",
+                "language": "Chinese"
+              },
+              {
+                "name": "Savills China",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research", "Valuation"],
+                "accessLevel": "Public/Subscription",
+                "language": "English/Chinese"
+              },
+              {
+                "name": "JLL China",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Intelligence", "Research Reports"],
+                "accessLevel": "Public/Subscription",
+                "language": "English/Chinese"
+              },
+              {
+                "name": "Ministry of Housing and Urban-Rural Development",
+                "type": "Government",
+                "dataTypes": ["Statistics", "Policy Information"],
+                "accessLevel": "Public",
+                "language": "Chinese"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - must comply with regulations",
+              "transferTax": "3-5%",
+              "propertyTaxRate": "Pilot program in select cities",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "CY",
+            "countryName": "Cyprus",
+            "capital": "Nicosia",
+            "currency": "EUR",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Department of Lands and Surveys",
+                "type": "Government",
+                "url": "http://www.moi.gov.cy/dls",
+                "dataTypes": ["Land Registry", "Cadastral Data", "Property Valuations"],
+                "accessLevel": "Public",
+                "language": "Greek/English"
+              },
+              {
+                "name": "Cyprus Property Portal",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Prices"],
+                "accessLevel": "Public",
+                "language": "English/Greek"
+              },
+              {
+                "name": "BuySell Cyprus",
+                "type": "Online Portal",
+                "dataTypes": ["Commercial Listings", "Investment Properties"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "3-8%",
+              "propertyTaxRate": "0%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "HK",
+            "countryName": "Hong Kong",
+            "capital": "Hong Kong",
+            "currency": "HKD",
+            "dataAccessibility": "Very High",
+            "dataSources": [
+              {
+                "name": "Rating and Valuation Department",
+                "type": "Government",
+                "url": "https://www.rvd.gov.hk",
+                "dataTypes": ["Property Valuation", "Rental Statistics", "Market Reports"],
+                "accessLevel": "Public",
+                "language": "English/Chinese"
+              },
+              {
+                "name": "Land Registry",
+                "type": "Government",
+                "url": "https://www.landreg.gov.hk",
+                "dataTypes": ["Property Transactions", "Title Information", "Ownership Records"],
+                "accessLevel": "Public (Fee)",
+                "language": "English/Chinese"
+              },
+              {
+                "name": "Centaline Property",
+                "type": "Commercial Provider",
+                "dataTypes": ["Property Data", "Market Analysis", "Transaction History"],
+                "accessLevel": "Public/Subscription",
+                "language": "English/Chinese"
+              },
+              {
+                "name": "JLL Hong Kong",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Research", "Investment Reports"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "Up to 8.5% (Stamp Duty)",
+              "propertyTaxRate": "15% on rental income",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "ID",
+            "countryName": "Indonesia",
+            "capital": "Jakarta",
+            "currency": "IDR",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "National Land Agency (BPN)",
+                "type": "Government",
+                "url": "https://www.atrbpn.go.id",
+                "dataTypes": ["Land Certificates", "Property Registry", "Land Use"],
+                "accessLevel": "Public",
+                "language": "Indonesian"
+              },
+              {
+                "name": "Colliers Indonesia",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Property Data", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "English/Indonesian"
+              },
+              {
+                "name": "JLL Indonesia",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Intelligence", "Valuation", "Investment Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              },
+              {
+                "name": "Rumah123",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Prices"],
+                "accessLevel": "Public",
+                "language": "Indonesian"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed for apartments (Hak Pakai title)",
+              "transferTax": "5%",
+              "propertyTaxRate": "0.5-1%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "JP",
+            "countryName": "Japan",
+            "capital": "Tokyo",
+            "currency": "JPY",
+            "dataAccessibility": "Very High",
+            "dataSources": [
+              {
+                "name": "Ministry of Land, Infrastructure, Transport and Tourism",
+                "type": "Government",
+                "url": "https://www.mlit.go.jp",
+                "dataTypes": ["Land Prices", "Transaction Data", "Construction Statistics"],
+                "accessLevel": "Public",
+                "language": "Japanese/English"
+              },
+              {
+                "name": "Japan Real Estate Institute",
+                "type": "Research Institute",
+                "url": "http://www.reinet.or.jp",
+                "dataTypes": ["Property Price Index", "Market Research", "Appraisals"],
+                "accessLevel": "Public/Subscription",
+                "language": "Japanese/English"
+              },
+              {
+                "name": "CBRE Japan",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Investment Analysis", "Valuation"],
+                "accessLevel": "Public/Subscription",
+                "language": "English/Japanese"
+              },
+              {
+                "name": "JLL Japan",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Intelligence", "Research Reports", "Data Analytics"],
+                "accessLevel": "Public/Subscription",
+                "language": "English/Japanese"
+              },
+              {
+                "name": "Real Estate Transaction Price Information",
+                "type": "Government Database",
+                "dataTypes": ["Transaction Prices", "Property Details"],
+                "accessLevel": "Public",
+                "language": "Japanese"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "Varies by prefecture",
+              "propertyTaxRate": "1.4% (standard)",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "KZ",
+            "countryName": "Kazakhstan",
+            "capital": "Astana",
+            "currency": "KZT",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Committee on State Property and Privatization",
+                "type": "Government",
+                "dataTypes": ["State Property", "Land Registry"],
+                "accessLevel": "Public",
+                "language": "Kazakh/Russian"
+              },
+              {
+                "name": "Krisha.kz",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Rental Data", "Market Prices"],
+                "accessLevel": "Public",
+                "language": "Russian/Kazakh"
+              },
+              {
+                "name": "Colliers Kazakhstan",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Subscription",
+                "language": "English/Russian"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - land ownership not allowed",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Up to 1.5%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "KG",
+            "countryName": "Kyrgyzstan",
+            "capital": "Bishkek",
+            "currency": "KGS",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "State Registration Service",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Land Records"],
+                "accessLevel": "Public",
+                "language": "Kyrgyz/Russian"
+              },
+              {
+                "name": "Lalafo.kg",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Classifieds"],
+                "accessLevel": "Public",
+                "language": "Russian"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "LA",
+            "countryName": "Laos",
+            "capital": "Vientiane",
+            "currency": "LAK",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Natural Resources and Environment",
+                "type": "Government",
+                "dataTypes": ["Land Registry", "Property Titles"],
+                "accessLevel": "Restricted",
+                "language": "Lao"
+              },
+              {
+                "name": "Laos Property",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed for condominiums only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Minimal",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "MY",
+            "countryName": "Malaysia",
+            "capital": "Kuala Lumpur",
+            "currency": "MYR",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "National Property Information Centre (NAPIC)",
+                "type": "Government",
+                "url": "http://napic.jpph.gov.my",
+                "dataTypes": ["Property Statistics", "Market Reports", "Transaction Data"],
+                "accessLevel": "Public",
+                "language": "Malay/English"
+              },
+              {
+                "name": "PropertyGuru Malaysia",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Analysis", "Rental Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "EdgeProp",
+                "type": "Online Portal",
+                "dataTypes": ["Property News", "Market Data", "Listings"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              },
+              {
+                "name": "Knight Frank Malaysia",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research", "Valuation"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed above minimum threshold",
+              "transferTax": "Up to 4%",
+              "propertyTaxRate": "Varies by state",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "MV",
+            "countryName": "Maldives",
+            "capital": "Malé",
+            "currency": "MVR",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Housing and Infrastructure",
+                "type": "Government",
+                "dataTypes": ["Development Plans", "Property Information"],
+                "accessLevel": "Public",
+                "language": "Dhivehi/English"
+              },
+              {
+                "name": "Maldives Property",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Very restricted",
+              "transferTax": "N/A",
+              "propertyTaxRate": "N/A",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "MN",
+            "countryName": "Mongolia",
+            "capital": "Ulaanbaatar",
+            "currency": "MNT",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "General Authority for Land Administration",
+                "type": "Government",
+                "dataTypes": ["Land Registry", "Cadastral Data"],
+                "accessLevel": "Public",
+                "language": "Mongolian"
+              },
+              {
+                "name": "Unegui.mn",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Rental Data"],
+                "accessLevel": "Public",
+                "language": "Mongolian"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - land ownership not allowed",
+              "transferTax": "2%",
+              "propertyTaxRate": "0.6%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "MM",
+            "countryName": "Myanmar",
+            "capital": "Naypyidaw",
+            "currency": "MMK",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Department of Urban and Housing Development",
+                "type": "Government",
+                "dataTypes": ["Property Records", "Development Plans"],
+                "accessLevel": "Restricted",
+                "language": "Burmese"
+              },
+              {
+                "name": "Myanmar Property",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English/Burmese"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - condominiums only",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "NP",
+            "countryName": "Nepal",
+            "capital": "Kathmandu",
+            "currency": "NPR",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Land Revenue Department",
+                "type": "Government",
+                "dataTypes": ["Land Records", "Property Registration"],
+                "accessLevel": "Public",
+                "language": "Nepali"
+              },
+              {
+                "name": "Gharjagga.com",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "Nepali/English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Not allowed",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "KP",
+            "countryName": "North Korea",
+            "capital": "Pyongyang",
+            "currency": "KPW",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Limited international access",
+                "type": "N/A",
+                "dataTypes": ["Not publicly available"],
+                "accessLevel": "Closed",
+                "language": "Korean"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Not allowed",
+              "transferTax": "N/A",
+              "propertyTaxRate": "N/A",
+              "registrationRequired": false
+            }
+          },
+          {
+            "countryCode": "OM",
+            "countryName": "Oman",
+            "capital": "Muscat",
+            "currency": "OMR",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Ministry of Housing and Urban Planning",
+                "type": "Government",
+                "dataTypes": ["Property Records", "Development Plans"],
+                "accessLevel": "Public",
+                "language": "Arabic/English"
+              },
+              {
+                "name": "Property Finder Oman",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English/Arabic"
+              },
+              {
+                "name": "CBRE Oman",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Valuation"],
+                "accessLevel": "Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed in designated areas",
+              "transferTax": "3%",
+              "propertyTaxRate": "N/A",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "PK",
+            "countryName": "Pakistan",
+            "capital": "Islamabad",
+            "currency": "PKR",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Federal Board of Revenue",
+                "type": "Government",
+                "dataTypes": ["Property Tax Records", "Valuation"],
+                "accessLevel": "Public",
+                "language": "Urdu/English"
+              },
+              {
+                "name": "Zameen.com",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Trends", "Price Indices"],
+                "accessLevel": "Public",
+                "language": "English/Urdu"
+              },
+              {
+                "name": "Graana.com",
+                "type": "Online Portal",
+                "dataTypes": ["Property Data", "Market Analysis"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "1-2%",
+              "propertyTaxRate": "Varies by city",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "PS",
+            "countryName": "Palestine",
+            "capital": "Ramallah",
+            "currency": "ILS/JOD",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Palestinian Land Authority",
+                "type": "Government",
+                "dataTypes": ["Land Registry", "Property Records"],
+                "accessLevel": "Restricted",
+                "language": "Arabic"
+              },
+              {
+                "name": "Local real estate agencies",
+                "type": "Private",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Limited",
+                "language": "Arabic/English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Complex due to political situation",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "PH",
+            "countryName": "Philippines",
+            "capital": "Manila",
+            "currency": "PHP",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Land Registration Authority",
+                "type": "Government",
+                "url": "https://www.lra.gov.ph",
+                "dataTypes": ["Land Titles", "Property Registry"],
+                "accessLevel": "Public",
+                "language": "English/Filipino"
+              },
+              {
+                "name": "Lamudi Philippines",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Property24 Philippines",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Trends"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Colliers Philippines",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed for condominiums up to 40%",
+              "transferTax": "0.5-0.75%",
+              "propertyTaxRate": "Up to 2%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "QA",
+            "countryName": "Qatar",
+            "capital": "Doha",
+            "currency": "QAR",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Ministry of Justice",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "Arabic/English"
+              },
+              {
+                "name": "Property Finder Qatar",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English/Arabic"
+              },
+              {
+                "name": "JLL Qatar",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Investment Analysis"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed in designated areas",
+              "transferTax": "N/A",
+              "propertyTaxRate": "10% on rental income",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "RU",
+            "countryName": "Russia",
+            "capital": "Moscow",
+            "currency": "RUB",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Rosreestr (Federal Service for State Registration)",
+                "type": "Government",
+                "url": "https://rosreestr.gov.ru",
+                "dataTypes": ["Property Registry", "Cadastral Data", "Ownership Records"],
+                "accessLevel": "Public",
+                "language": "Russian"
+              },
+              {
+                "name": "CIAN.ru",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Analytics", "Price Data"],
+                "accessLevel": "Public",
+                "language": "Russian"
+              },
+              {
+                "name": "JLL Russia",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Research", "Investment Reports"],
+                "accessLevel": "Public/Subscription",
+                "language": "English/Russian"
+              },
+              {
+                "name": "Knight Frank Russia",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Valuation"],
+                "accessLevel": "Subscription",
+                "language": "English/Russian"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions on land",
+              "transferTax": "Varies by region",
+              "propertyTaxRate": "Up to 2%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "SA",
+            "countryName": "Saudi Arabia",
+            "capital": "Riyadh",
+            "currency": "SAR",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Ministry of Justice",
+                "type": "Government",
+                "url": "https://www.moj.gov.sa",
+                "dataTypes": ["Property Registry", "Real Estate Transactions"],
+                "accessLevel": "Public",
+                "language": "Arabic/English"
+              },
+              {
+                "name": "Aqar",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "Arabic"
+              },
+              {
+                "name": "Bayut Saudi Arabia",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Trends"],
+                "accessLevel": "Public",
+                "language": "English/Arabic"
+              },
+              {
+                "name": "JLL Saudi Arabia",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Investment Analysis"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with recent reforms",
+              "transferTax": "5%",
+              "propertyTaxRate": "2.5% (Zakat)",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "SG",
+            "countryName": "Singapore",
+            "capital": "Singapore",
+            "currency": "SGD",
+            "dataAccessibility": "Very High",
+            "dataSources": [
+              {
+                "name": "Urban Redevelopment Authority (URA)",
+                "type": "Government",
+                "url": "https://www.ura.gov.sg",
+                "dataTypes": ["Property Market Statistics", "Transaction Data", "Rental Statistics"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Singapore Land Authority",
+                "type": "Government",
+                "dataTypes": ["Land Data", "Property Information"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "PropertyGuru Singapore",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Analytics"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Real Estate Analytics",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Data", "Analytics", "Reports"],
+                "accessLevel": "Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "Up to 4% (Buyer's Stamp Duty)",
+              "propertyTaxRate": "10-20%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "KR",
+            "countryName": "South Korea",
+            "capital": "Seoul",
+            "currency": "KRW",
+            "dataAccessibility": "Very High",
+            "dataSources": [
+              {
+                "name": "Korea Real Estate Board",
+                "type": "Government",
+                "url": "http://www.reb.or.kr",
+                "dataTypes": ["Property Prices", "Transaction Data", "Market Statistics"],
+                "accessLevel": "Public",
+                "language": "Korean/English"
+              },
+              {
+                "name": "Ministry of Land, Infrastructure and Transport",
+                "type": "Government",
+                "dataTypes": ["Real Estate Statistics", "Policy Information"],
+                "accessLevel": "Public",
+                "language": "Korean"
+              },
+              {
+                "name": "Naver Real Estate",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "Korean"
+              },
+              {
+                "name": "JLL Korea",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "English/Korean"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with reporting requirements",
+              "transferTax": "1-3%",
+              "propertyTaxRate": "0.1-4%",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "LK",
+            "countryName": "Sri Lanka",
+            "capital": "Colombo",
+            "currency": "LKR",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Department of Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Title Deeds"],
+                "accessLevel": "Public",
+                "language": "Sinhala/Tamil/English"
+              },
+              {
+                "name": "Ikman.lk",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Prices"],
+                "accessLevel": "Public",
+                "language": "English/Sinhala"
+              },
+              {
+                "name": "Lamudi Sri Lanka",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted - apartments/condos only",
+              "transferTax": "2-4%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "TJ",
+            "countryName": "Tajikistan",
+            "capital": "Dushanbe",
+            "currency": "TJS",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "State Committee on Investments and State Property Management",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "Tajik/Russian"
+              },
+              {
+                "name": "Local property portals",
+                "type": "Online Portal",
+                "dataTypes": ["Limited listings"],
+                "accessLevel": "Public",
+                "language": "Russian"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "TH",
+            "countryName": "Thailand",
+            "capital": "Bangkok",
+            "currency": "THB",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "Department of Lands",
+                "type": "Government",
+                "url": "http://www.dol.go.th",
+                "dataTypes": ["Land Registry", "Title Deeds", "Property Transactions"],
+                "accessLevel": "Public",
+                "language": "Thai/English"
+              },
+              {
+                "name": "DDProperty",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Data"],
+                "accessLevel": "Public",
+                "language": "English/Thai"
+              },
+              {
+                "name": "Fazwaz",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Analysis"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "CBRE Thailand",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed for condominiums up to 49%",
+              "transferTax": "2%",
+              "propertyTaxRate": "12.5% on rental income",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "AE",
+            "countryName": "United Arab Emirates",
+            "capital": "Abu Dhabi",
+            "currency": "AED",
+            "dataAccessibility": "Very High",
+            "dataSources": [
+              {
+                "name": "Dubai Land Department",
+                "type": "Government",
+                "url": "https://dubailand.gov.ae",
+                "dataTypes": ["Property Transactions", "Market Statistics", "Price Indices"],
+                "accessLevel": "Public",
+                "language": "English/Arabic"
+              },
+              {
+                "name": "REIDIN",
+                "type": "Commercial Provider",
+                "dataTypes": ["Property Data", "Market Analytics", "Transaction History"],
+                "accessLevel": "Subscription",
+                "language": "English"
+              },
+              {
+                "name": "Property Finder UAE",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Reports"],
+                "accessLevel": "Public",
+                "language": "English/Arabic"
+              },
+              {
+                "name": "Bayut",
+                "type": "Online Portal",
+                "dataTypes": ["Listings", "Market Trends", "Price Data"],
+                "accessLevel": "Public",
+                "language": "English/Arabic"
+              },
+              {
+                "name": "JLL UAE",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Research", "Investment Reports"],
+                "accessLevel": "Public/Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed in designated freehold areas",
+              "transferTax": "4% (Dubai), 2-4% (other emirates)",
+              "propertyTaxRate": "N/A",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "UZ",
+            "countryName": "Uzbekistan",
+            "capital": "Tashkent",
+            "currency": "UZS",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "State Committee on Statistics",
+                "type": "Government",
+                "dataTypes": ["Property Statistics"],
+                "accessLevel": "Public",
+                "language": "Uzbek/Russian"
+              },
+              {
+                "name": "Olx.uz",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "Russian/Uzbek"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "VN",
+            "countryName": "Vietnam",
+            "capital": "Hanoi",
+            "currency": "VND",
+            "dataAccessibility": "High",
+            "dataSources": [
+              {
+                "name": "General Statistics Office",
+                "type": "Government",
+                "url": "https://www.gso.gov.vn",
+                "dataTypes": ["Real Estate Statistics", "Market Data"],
+                "accessLevel": "Public",
+                "language": "Vietnamese/English"
+              },
+              {
+                "name": "Batdongsan.com.vn",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings", "Market Prices"],
+                "accessLevel": "Public",
+                "language": "Vietnamese"
+              },
+              {
+                "name": "JLL Vietnam",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Reports", "Research"],
+                "accessLevel": "Public/Subscription",
+                "language": "English/Vietnamese"
+              },
+              {
+                "name": "Savills Vietnam",
+                "type": "Commercial Provider",
+                "dataTypes": ["Market Analysis", "Valuation"],
+                "accessLevel": "Subscription",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "0.5%",
+              "propertyTaxRate": "Minimal",
+              "registrationRequired": true
+            }
+          }
+        ]
+      },
+      "africa": {
+        "name": "Africa",
+        "totalCountries": 53,
+        "countries": [
+          {
+            "countryCode": "DZ",
+            "countryName": "Algeria",
+            "capital": "Algiers",
+            "currency": "DZD",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "National Agency for Cadastre",
+                "type": "Government",
+                "dataTypes": ["Land Registry", "Cadastral Data"],
+                "accessLevel": "Public",
+                "language": "Arabic/French"
+              },
+              {
+                "name": "Local real estate agencies",
+                "type": "Private",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Limited",
+                "language": "Arabic/French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "AO",
+            "countryName": "Angola",
+            "capital": "Luanda",
+            "currency": "AOA",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Urbanism and Housing",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "Portuguese"
+              },
+              {
+                "name": "Property Angola",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "Portuguese"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "BJ",
+            "countryName": "Benin",
+            "capital": "Porto-Novo",
+            "currency": "XOF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land Registry Office",
+                "type": "Government",
+                "dataTypes": ["Property Registry"],
+                "accessLevel": "Public",
+                "language": "French"
+              },
+              {
+                "name": "Local brokers",
+                "type": "Private",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Limited",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "BW",
+            "countryName": "Botswana",
+            "capital": "Gaborone",
+            "currency": "BWP",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Department of Lands and Surveys",
+                "type": "Government",
+                "dataTypes": ["Land Registry", "Property Records"],
+                "accessLevel": "Public",
+                "language": "English"
+              },
+              {
+                "name": "Property Point Botswana",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "5%",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "BF",
+            "countryName": "Burkina Faso",
+            "capital": "Ouagadougou",
+            "currency": "XOF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Housing and Urban Development",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "French"
+              },
+              {
+                "name": "Local agencies",
+                "type": "Private",
+                "dataTypes": ["Limited listings"],
+                "accessLevel": "Limited",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "BI",
+            "countryName": "Burundi",
+            "capital": "Gitega",
+            "currency": "BIF",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Environment",
+                "type": "Government",
+                "dataTypes": ["Land Records"],
+                "accessLevel": "Restricted",
+                "language": "French/Kirundi"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "CM",
+            "countryName": "Cameroon",
+            "capital": "Yaoundé",
+            "currency": "XAF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of State Property and Land Tenure",
+                "type": "Government",
+                "dataTypes": ["Land Registry"],
+                "accessLevel": "Public",
+                "language": "French/English"
+              },
+              {
+                "name": "Jumia House Cameroon",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "French/English"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "CV",
+            "countryName": "Cape Verde",
+            "capital": "Praia",
+            "currency": "CVE",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "National Land Registry",
+                "type": "Government",
+                "dataTypes": ["Property Registry"],
+                "accessLevel": "Public",
+                "language": "Portuguese"
+              },
+              {
+                "name": "Local property portals",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Limited",
+                "language": "Portuguese"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "CF",
+            "countryName": "Central African Republic",
+            "capital": "Bangui",
+            "currency": "XAF",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Limited formal data infrastructure",
+                "type": "N/A",
+                "dataTypes": ["Minimal data available"],
+                "accessLevel": "Restricted",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Complex due to instability",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "TD",
+            "countryName": "Chad",
+            "capital": "N'Djamena",
+            "currency": "XAF",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Ministry of Land Affairs",
+                "type": "Government",
+                "dataTypes": ["Limited records"],
+                "accessLevel": "Restricted",
+                "language": "French/Arabic"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "KM",
+            "countryName": "Comoros",
+            "capital": "Moroni",
+            "currency": "KMF",
+            "dataAccessibility": "Very Limited",
+            "dataSources": [
+              {
+                "name": "Local land offices",
+                "type": "Government",
+                "dataTypes": ["Minimal data"],
+                "accessLevel": "Restricted",
+                "language": "Arabic/French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Restricted",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "CI",
+            "countryName": "Côte d'Ivoire",
+            "capital": "Yamoussoukro",
+            "currency": "XOF",
+            "dataAccessibility": "Medium",
+            "dataSources": [
+              {
+                "name": "Land Registry Office",
+                "type": "Government",
+                "dataTypes": ["Property Registry", "Land Records"],
+                "accessLevel": "Public",
+                "language": "French"
+              },
+              {
+                "name": "Jumia House Côte d'Ivoire",
+                "type": "Online Portal",
+                "dataTypes": ["Property Listings"],
+                "accessLevel": "Public",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Allowed with restrictions",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          },
+          {
+            "countryCode": "CD",
+            "countryName": "Democratic Republic of the Congo",
+            "capital": "Kinshasa",
+            "currency": "CDF",
+            "dataAccessibility": "Limited",
+            "dataSources": [
+              {
+                "name": "Land titles office",
+                "type": "Government",
+                "dataTypes": ["Property Records"],
+                "accessLevel": "Restricted",
+                "language": "French"
+              },
+              {
+                "name": "Local brokers",
+                "type": "Private",
+                "dataTypes": ["Limited listings"],
+                "accessLevel": "Limited",
+                "language": "French"
+              }
+            ],
+            "regulatoryInfo": {
+              "foreignOwnership": "Complex regulations",
+              "transferTax": "Varies",
+              "propertyTaxRate": "Variable",
+              "registrationRequired": true
+            }
+          }
+}

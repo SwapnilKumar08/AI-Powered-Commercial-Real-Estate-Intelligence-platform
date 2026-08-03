@@ -1,0 +1,428 @@
+import time
+import csv
+import random
+import zipfile
+import os
+import re
+from pathlib import Path
+from typing import List, Dict, Tuple
+
+--------------------- Machine Learning & Deep Learning ------------------------
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+from sklearn.utils.class_weight import compute_class_weight
+import joblib
+
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Embedding, Bidirectional, LSTM, Dense, Dropout
+from tensorflow.keras.callbacks import EarlyStopping
+import numpy as np
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import InvalidSessionIdException, WebDriverException
+from webdriver_manager.chrome import ChromeDriverManager
+
+LINKEDIN_EMAIL = "email address"
+LINKEDIN_PASSWORD = "password"
+INPUT_CSV = "company_city_list.csv"
+
+OUTPUT_CSV = "real_estate_professionals_india.csv"
+OUTPUT_ZIP = "real_estate_professionals_india.zip"
+
+OUTPUT_SCORED = "real_estate_professionals_india_scored.csv"
+OUTPUT_FILTERED = "real_estate_professionals_india_filtered.csv"
+OUTPUT_UNCERTAIN = "real_estate_professionals_india_uncertain.csv"
+
+MODEL_DIR = Path("models")
+VECTORIZER_PATH = MODEL_DIR / "relevance_vectorizer.joblib"
+MODEL_PATH = MODEL_DIR / "relevance_model.joblib"
+DL_MODEL_PATH = MODEL_DIR / "dl_model.h5"
+TOKENIZER_PATH = MODEL_DIR / "dl_tokenizer.joblib"
+
+NUM_QUERIES = 10
+MAX_RESULTS_PER_QUERY = 5
+BATCH_SIZE = 5
+
+THRESHOLD = 0.65
+UNCERTAIN_LOW, UNCERTAIN_HIGH = 0.45, 0.65
+
+
+MAX_VOCAB = 5000
+MAX_LEN = 50
+EMBED_DIM = 64
+
+companies = [
+    "DLF Limited","Oberoi Realty","Lodha Group","Prestige Estates Projects",
+    "Godrej Properties","Brigade Group","Piramal Realty","Sobha Ltd",
+    "Macrotech Developers","Kolte-Patil Developers"
+]
+
+cities = [
+    "Mumbai","Delhi","Bengaluru","Hyderabad","Pune",
+    "Chennai","Ahmedabad","Kolkata","Noida","Gurgaon"
+]
+
+job_titles = [
+    "Real Estate Agent","Real Estate Consultant","Property Advisor",
+    "Property Manager","Broker","Realty Specialist"
+]
+
+REAL_ESTATE_KEYWORDS = [
+    "real estate","realtor","broker","property","estate agent",
+    "realty","leasing","asset management","property manager",
+    "commercial real estate","residential real estate","land acquisition",
+    "real estate consultant","sales","investment","developer","leasing manager"
+]
+
+NEGATIVE_HINTS = [
+    "software","engineer","developer (software)","data scientist",
+    "machine learning","student","intern","professor","phd"
+]
+
+driver = None
+
+def init_driver():
+    global driver
+    options = webdriver.ChromeOptions()
+    options.add_argument("--start-maximized")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+def linkedin_login():
+    driver.get("https://www.linkedin.com/login")
+    time.sleep(3)
+    driver.find_element(By.ID, "username").send_keys(LINKEDIN_EMAIL)
+    driver.find_element(By.ID, "password").send_keys(LINKEDIN_PASSWORD)
+    driver.find_element(By.ID, "password").send_keys(Keys.RETURN)
+    time.sleep(5)
+    print("[INFO] Logged into LinkedIn successfully!")
+
+def restart_driver():
+    global driver
+    try: driver.quit()
+    except: pass
+    print("[INFO] Restarting ChromeDriver...")
+    init_driver()
+    linkedin_login()
+
+def safe_get(url):
+    try:
+        driver.get(url)
+    except InvalidSessionIdException:
+        print("[WARN] Session expired! Restarting driver...")
+        restart_driver()
+        driver.get(url)
+    except WebDriverException as e:
+        print(f"[WARN] WebDriverException: {e}. Restarting driver...")
+        restart_driver()
+        driver.get(url)
+
+def generate_real_estate_queries():
+    queries = [
+        {"company":random.choice(companies),
+         "city":random.choice(cities),
+         "job_title":random.choice(job_titles)}
+        for _ in range(NUM_QUERIES)
+    ]
+    with open(INPUT_CSV,"w",newline="",encoding="utf-8") as f:
+        writer = csv.DictWriter(f,fieldnames=["company","city","job_title"])
+        writer.writeheader()
+        writer.writerows(queries)
+    print(f"[INFO] Generated {NUM_QUERIES} queries -> {INPUT_CSV}")
+
+def search_linkedin_real_estate(query,max_results=5):
+    geo_urn_india = "%5B%22102105083%22%5D"
+    url = f"https://www.linkedin.com/search/results/people/?keywords={query.replace(' ','%20')}&geoUrn={geo_urn_india}"
+    print(f"[INFO] Visiting URL: {url}")
+    safe_get(url)
+    time.sleep(random.uniform(6,9))
+
+    profiles = []
+    try:
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(random.uniform(3,5))
+        results = driver.find_elements(By.CSS_SELECTOR,"li.reusable-search__result-container")
+        for res in results[:max_results]:
+            try:
+                profile_link = res.find_element(By.CSS_SELECTOR,"a.app-aware-link").get_attribute("href")
+                name_text = res.find_element(By.CSS_SELECTOR,
+                           "span.entity-result__title-text span[aria-hidden='true']").text.strip()
+                try:
+                    job_company = res.find_element(By.CSS_SELECTOR,
+                                    "div.entity-result__primary-subtitle").text.strip()
+                except: job_company="N/A"
+                try:
+                    location = res.find_element(By.CSS_SELECTOR,
+                                    "div.entity-result__secondary-subtitle").text.strip()
+                except: location="N/A"
+
+                if "linkedin.com/in/" in profile_link:
+                    profiles.append({
+                        "name":name_text,
+                        "linkedin_url":profile_link,
+                        "current_position":job_company,
+                        "location":location})
+            except: continue
+    except Exception as e:
+        print(f"[WARN] No results for {query}: {e}")
+    return profiles
+
+def normalize_text(x:str)->str:
+    if not isinstance(x,str): return ""
+    x = x.lower()
+    x = re.sub(r"[^a-z0-9\s\-/&.,]+"," ",x)
+    x = re.sub(r"\s+"," ",x).strip()
+    return x
+
+def dedupe_records(rows:List[Dict])->List[Dict]:
+    seen, out = set(), []
+    for r in rows:
+        key = r.get("linkedin_url") or f"{normalize_text(r.get('name',''))}|{normalize_text(r.get('current_position',''))}|{normalize_text(r.get('location',''))}"
+        if key not in seen:
+            seen.add(key)
+            out.append(r)
+    return out
+
+def weak_label(row:Dict)->int:
+    text = " ".join([row.get("job_title",""),row.get("current_position",""),
+                     row.get("company",""),row.get("city",""),row.get("name","")])
+    t_norm = normalize_text(text)
+    pos = any(k in t_norm for k in REAL_ESTATE_KEYWORDS)
+    comp = normalize_text(row.get("company",""))
+    pos = pos or any(normalize_text(c) in t_norm for c in companies)
+    neg = any(k in t_norm for k in NEGATIVE_HINTS)
+    if pos and not neg: return 1
+    if neg and not pos: return 0
+    jt = normalize_text(row.get("job_title",""))
+    if jt and jt in t_norm: return 1
+    return 0
+
+def build_training_frame(records:List[Dict])->pd.DataFrame:
+    df = pd.DataFrame(records)
+    for col in ["company","city","job_title","name","linkedin_url","current_position","location"]:
+        if col not in df.columns: df[col]=""
+        df[col] = df[col].fillna("")
+    df["text"] = (df["job_title"]+" | "+df["current_position"]+" | "+
+                  df["company"]+" | "+df["city"]+" | "+df["name"]).map(normalize_text)
+    df["label"] = df.apply(lambda r:weak_label(r),axis=1)
+    return df
+
+
+def ensure_model_dir(): MODEL_DIR.mkdir(parents=True,exist_ok=True)
+
+def train_or_load_relevance_model(df:pd.DataFrame)->Tuple[Pipeline,bool]:
+    ensure_model_dir()
+    if VECTORIZER_PATH.exists() and MODEL_PATH.exists():
+        try:
+            vec = joblib.load(VECTORIZER_PATH)
+            model = joblib.load(MODEL_PATH)
+            pipe = Pipeline([("tfidf",vec),("clf",model)])
+            print("[ML] Loaded existing TF-IDF+LogReg model.")
+            return pipe,False
+        except: print("[ML] Reload failed, retraining...")
+
+    labels = df["label"].tolist()
+    if sum(labels)==0 or sum(1 for x in labels if x==0)==0:
+        print("[ML] Not enough class diversity → rules only.")
+        vec = TfidfVectorizer(ngram_range=(1,2),min_df=1,max_df=1.0)
+        dummy = LogisticRegression()
+        pipe = Pipeline([("tfidf",vec),("clf",dummy)])
+        if len(df)>0: pipe.named_steps["tfidf"].fit(df["text"])
+        joblib.dump(pipe.named_steps["tfidf"],VECTORIZER_PATH)
+        return pipe,False
+
+    classes=[0,1]
+    cw = compute_class_weight('balanced',classes=classes,y=labels)
+    class_weight = {0:cw[0],1:cw[1]}
+    X_train,X_val,y_train,y_val = train_test_split(df["text"],labels,test_size=0.2,
+                                                  stratify=labels,random_state=42)
+    vec = TfidfVectorizer(ngram_range=(1,2),min_df=2,max_df=0.95,sublinear_tf=True)
+    clf = LogisticRegression(max_iter=1000,class_weight=class_weight)
+    pipe = Pipeline([("tfidf",vec),("clf",clf)])
+    pipe.fit(X_train,y_train)
+    y_pred = pipe.predict(X_val)
+    print("[ML] Validation report:\n",classification_report(y_val,y_pred,digits=3))
+    joblib.dump(pipe.named_steps["tfidf"],VECTORIZER_PATH)
+    joblib.dump(pipe.named_steps["clf"],MODEL_PATH)
+    print("[ML] Trained & saved TF-IDF+LogReg model.")
+    return pipe,True
+
+def score_with_model(pipe:Pipeline,df:pd.DataFrame)->pd.DataFrame:
+    try:
+        probs = pipe.predict_proba(df["text"])[:,1]
+        preds = (probs>=THRESHOLD).astype(int)
+    except:
+        probs = df["label"].astype(float).values
+        preds = df["label"].values
+    out = df.copy()
+    out["prob_relevant"] = probs
+    out["predicted_label"] = preds
+    return out
+
+def train_or_load_dl_model(df: pd.DataFrame):
+    """
+    """
+    ensure_model_dir()
+    texts, labels = df["text"].tolist(), df["label"].tolist()
+    n_samples = len(labels)
+
+    if DL_MODEL_PATH.exists() and TOKENIZER_PATH.exists():
+        print("[DL] Loading existing DL model...")
+        model = load_model(DL_MODEL_PATH)
+        tokenizer = joblib.load(TOKENIZER_PATH)
+        return model, tokenizer, False
+
+    if n_samples < 2:
+        print(f"[DL] Only {n_samples} samples found. Skipping DL training.")
+        tokenizer = Tokenizer(num_words=MAX_VOCAB, oov_token="<OOV>")
+        tokenizer.fit_on_texts(texts)
+        dummy_model = Sequential([
+            Embedding(MAX_VOCAB, EMBED_DIM, input_length=MAX_LEN),
+            Dense(1, activation="sigmoid")
+        ])
+        dummy_model.compile(loss="binary_crossentropy", optimizer="adam")
+        return dummy_model, tokenizer, False
+
+    tokenizer = Tokenizer(num_words=MAX_VOCAB, oov_token="<OOV>")
+    tokenizer.fit_on_texts(texts)
+    seq = tokenizer.texts_to_sequences(texts)
+    pad = pad_sequences(seq, maxlen=MAX_LEN, padding="post", truncating="post")
+
+    model = Sequential([
+        Embedding(MAX_VOCAB, EMBED_DIM, input_length=MAX_LEN),
+        Bidirectional(LSTM(64, return_sequences=False)),
+        Dropout(0.3),
+        Dense(1, activation="sigmoid")
+    ])
+    model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
+
+    val_split = 0.2 if n_samples >= 10 else 0.0
+    print(f"[DL] Training DL model on {n_samples} samples (validation_split={val_split})")
+    callbacks = [EarlyStopping(monitor="val_loss", patience=3, restore_best_weights=True)] if val_split>0 else []
+
+    model.fit(
+        pad, np.array(labels),
+        validation_split=val_split,
+        epochs=10,
+        batch_size=16,
+        callbacks=callbacks,
+        verbose=1
+    )
+
+    model.save(DL_MODEL_PATH)
+    joblib.dump(tokenizer, TOKENIZER_PATH)
+    print("[DL] Trained & saved DL model.")
+    return model, tokenizer, True
+
+def score_with_dl_model(model, tokenizer, df: pd.DataFrame) -> pd.DataFrame:
+    """
+    """
+    n_samples = len(df)
+    seq = tokenizer.texts_to_sequences(df["text"])
+    pad = pad_sequences(seq, maxlen=MAX_LEN, padding="post", truncating="post")
+
+    try:
+        probs = model.predict(pad).flatten()
+    except Exception as e:
+        print(f"[DL] Prediction failed: {e}")
+        probs = np.zeros(n_samples)
+
+    if len(probs) != n_samples:
+        print(f"[DL] Adjusting: model returned {len(probs)} values for {n_samples} samples.")
+        probs = np.full(n_samples, 0.5)  # neutral probability fallback
+
+    preds = (probs >= THRESHOLD).astype(int)
+    out = df.copy()
+    out["dl_prob_relevant"] = probs
+    out["dl_predicted_label"] = preds
+    return out
+
+def save_csvs(scored_df:pd.DataFrame):
+    scored_df.to_csv(OUTPUT_SCORED,index=False,encoding="utf-8")
+    print(f"[SAVE] Scored results -> {OUTPUT_SCORED}")
+    filtered = scored_df[scored_df["prob_relevant"]>=THRESHOLD].copy()
+    filtered.sort_values("prob_relevant",ascending=False,inplace=True)
+    filtered.to_csv(OUTPUT_FILTERED,index=False,encoding="utf-8")
+    print(f"[SAVE] Filtered -> {OUTPUT_FILTERED}")
+    uncertain = scored_df[(scored_df["prob_relevant"]>=UNCERTAIN_LOW) &
+                          (scored_df["prob_relevant"]<UNCERTAIN_HIGH)].copy()
+    uncertain.to_csv(OUTPUT_UNCERTAIN,index=False,encoding="utf-8")
+    print(f"[SAVE] Uncertain -> {OUTPUT_UNCERTAIN}")
+    filtered.to_csv(OUTPUT_CSV,index=False,encoding="utf-8")   # backward-compat
+    print(f"[SAVE] {OUTPUT_CSV} created (filtered set)")
+
+def create_zip_file(csv_file,zip_file):
+    with zipfile.ZipFile(zip_file,'w',zipfile.ZIP_DEFLATED) as z: z.write(csv_file)
+    print(f"[INFO] ZIP -> {zip_file}")
+
+def main():
+    generate_real_estate_queries()
+    init_driver()
+    linkedin_login()
+
+    all_results = []
+    with open(INPUT_CSV,"r",encoding="utf-8") as f:
+        queries = list(csv.DictReader(f))
+
+    for i in range(0,len(queries),BATCH_SIZE):
+        batch = queries[i:i+BATCH_SIZE]
+        print(f"\n[INFO] Processing batch {i//BATCH_SIZE+1}/{(len(queries)+BATCH_SIZE-1)//BATCH_SIZE}")
+        for row in batch:
+            q = f"{row['job_title']} at {row['company']} in {row['city']} India"
+            print(f"[INFO] Searching: {q}")
+            try: profiles = search_linkedin_real_estate(q,MAX_RESULTS_PER_QUERY)
+            except InvalidSessionIdException:
+                print("[WARN] Session lost, restarting...")
+                restart_driver()
+                profiles = search_linkedin_real_estate(q,MAX_RESULTS_PER_QUERY)
+            if profiles:
+                for p in profiles:
+                    all_results.append({
+                        "company":row['company'],"city":row['city'],
+                        "job_title":row['job_title'],
+                        "name":p["name"],"linkedin_url":p["linkedin_url"],
+                        "current_position":p["current_position"],
+                        "location":p["location"]})
+            else:
+                all_results.append({
+                    "company":row['company'],"city":row['city'],
+                    "job_title":row['job_title'],
+                    "name":"NOT FOUND","linkedin_url":"NOT FOUND",
+                    "current_position":"NOT FOUND","location":"NOT FOUND"})
+            time.sleep(random.uniform(8,15))
+        restart_driver()
+
+    try: driver.quit()
+    except: pass
+
+    all_results = dedupe_records(all_results)
+    df = build_training_frame(all_results)
+
+    pipe,_ = train_or_load_relevance_model(df)
+    scored_df = score_with_model(pipe,df)
+
+    dl_model,dl_tokenizer,_ = train_or_load_dl_model(df)
+    scored_df = score_with_dl_model(dl_model,dl_tokenizer,scored_df)
+
+    save_csvs(scored_df)
+    create_zip_file(OUTPUT_CSV,OUTPUT_ZIP)
+
+    print("\nDONE!")
+    print(f" Scored CSV: {os.path.abspath(OUTPUT_SCORED)}")
+    print(f" Filtered CSV: {os.path.abspath(OUTPUT_FILTERED)}")
+    print(f" Uncertain CSV: {os.path.abspath(OUTPUT_UNCERTAIN)}")
+    print(f" ZIP: {os.path.abspath(OUTPUT_ZIP)}")
+    print(f" Models saved in: {MODEL_DIR.resolve()}")
+
+if __name__ == "__main__":
+    main()
