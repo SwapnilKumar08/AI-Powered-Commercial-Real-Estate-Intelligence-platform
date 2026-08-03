@@ -2,13 +2,24 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
-  evidenceCorpus,
-  marketSeries,
+  defaultCountryCode,
+  getCountryEvidence,
+  getCountryMarketSeries,
+  getCountryProfile,
+  getCountryProperties,
+  listCountryProfiles,
   properties,
+  type CountryCode,
+  type EvidenceRecord,
   type PropertyRecord,
 } from "../lib/cre-data";
+import {
+  globalCountrySummaries,
+  globalSearchStats,
+  searchGlobalRealEstate,
+} from "../lib/global-real-estate";
 
-type View = "radar" | "research" | "forecast" | "origination";
+type View = "platform" | "radar" | "research" | "forecast" | "origination";
 type ForecastModel = "convlstm" | "predrnn";
 type AssetFilter = "all" | "office" | "logistics" | "mixed-use";
 type Scenario = "base" | "rates" | "supply";
@@ -25,6 +36,7 @@ type ContactSource = {
 type ContactState = ContactSource & { queued: boolean };
 
 const navigation: { id: View; label: string; glyph: string }[] = [
+  { id: "platform", label: "Global platform", glyph: "◉" },
   { id: "radar", label: "Deal radar", glyph: "⌁" },
   { id: "research", label: "AI research", glyph: "✦" },
   { id: "forecast", label: "Forecast lab", glyph: "⌇" },
@@ -63,6 +75,42 @@ const contacts: ContactSource[] = [
     status: "Hold",
   },
 ];
+
+const initialCountryProperties = getCountryProperties(defaultCountryCode);
+
+function lexicalScore(query: string, text: string) {
+  const queryTerms = new Set(query.toLowerCase().match(/[a-z0-9]+/g) ?? []);
+  if (!queryTerms.size) return 0;
+  const docTerms = new Set(text.toLowerCase().match(/[a-z0-9]+/g) ?? []);
+  let overlap = 0;
+  for (const term of queryTerms) {
+    if (docTerms.has(term)) overlap += 1;
+  }
+  return overlap / queryTerms.size;
+}
+
+function composeLocalAnswer(
+  question: string,
+  selected: PropertyRecord,
+  selectedEvidence: EvidenceRecord[],
+) {
+  const ranked = selectedEvidence
+    .map((evidence) => ({
+      evidence,
+      score: lexicalScore(question, `${evidence.title} ${evidence.excerpt}`),
+    }))
+    .sort((left, right) => right.score - left.score)
+    .slice(0, 2)
+    .map((item) => item.evidence);
+  if (!ranked.length) {
+    return `${selected.name} currently has limited indexed evidence for this query. Broaden the question to include leasing, planning, location or market momentum.`;
+  }
+  const lead = ranked[0];
+  const support = ranked[1];
+  return `${selected.name} is supported by localized evidence. ${lead.excerpt}${
+    support ? ` ${support.excerpt}` : ""
+  } Review cited records before making an investment decision.`;
+}
 
 function Sparkline({
   values,
@@ -104,19 +152,23 @@ function Sparkline({
 function PropertyMap({
   selected,
   properties,
+  labels,
+  mapKey,
   onSelect,
 }: {
   selected: string;
   properties: PropertyRecord[];
+  labels: string[];
+  mapKey: string;
   onSelect: (property: PropertyRecord) => void;
 }) {
   return (
-    <div className="market-map" aria-label="London opportunity map">
+    <div className="market-map" aria-label="Country opportunity map">
       <div className="river river-one" />
       <div className="river river-two" />
-      <div className="district-label district-west">West End</div>
-      <div className="district-label district-city">City Core</div>
-      <div className="district-label district-east">Stratford</div>
+      <div className="district-label district-west">{labels[0] ?? "West"}</div>
+      <div className="district-label district-city">{labels[1] ?? "Core"}</div>
+      <div className="district-label district-east">{labels[2] ?? "East"}</div>
       <div className="map-orbit orbit-one" />
       <div className="map-orbit orbit-two" />
       {properties.map((property) => (
@@ -132,33 +184,41 @@ function PropertyMap({
       ))}
       <div className="map-key">
         <span className="live-dot" />
-        34,218 assets · refreshed 4 min ago
+        {mapKey}
       </div>
     </div>
   );
 }
 
 export function CREWorkspace() {
-  const [view, setView] = useState<View>("radar");
-  const [selectedId, setSelectedId] = useState(properties[0].id);
+  const [view, setView] = useState<View>("platform");
+  const [countryCode, setCountryCode] = useState<CountryCode>(defaultCountryCode);
+  const [selectedId, setSelectedId] = useState(initialCountryProperties[0]?.id ?? properties[0].id);
   const [model, setModel] = useState<ForecastModel>("predrnn");
   const [assetFilter, setAssetFilter] = useState<AssetFilter>("all");
   const [scenario, setScenario] = useState<Scenario>("base");
+  const [globalQuery, setGlobalQuery] = useState("mixed-use projects near transit");
+  const [globalScope, setGlobalScope] = useState<CountryCode | "ALL">("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const [contactStates, setContactStates] = useState<ContactState[]>(
     contacts.map((contact) => ({ ...contact, queued: false })),
   );
   const [question, setQuestion] = useState(
-    "Why is The Arches ranked as a high-conviction opportunity?",
+    "Why is this asset ranked as a high-conviction opportunity?",
   );
   const [answer, setAnswer] = useState(
-    "The Arches combines a 5.8% entry yield with a credible laboratory-conversion pathway. Planning evidence supports lab-enabled employment space, while local availability remains constrained and fitted laboratory rents are up 7.2% year on year.",
+    "Select a country and ask a market question. Landmark will retrieve the strongest local evidence and summarize the investment signal.",
   );
   const [isThinking, setIsThinking] = useState(false);
   const [toast, setToast] = useState("");
+  const countryProfiles = useMemo(() => listCountryProfiles(), []);
+  const countryProfile = useMemo(() => getCountryProfile(countryCode), [countryCode]);
+  const countryProperties = useMemo(() => getCountryProperties(countryCode), [countryCode]);
+  const countryEvidence = useMemo(() => getCountryEvidence(countryCode), [countryCode]);
+
   const filteredProperties = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
-    return properties.filter((property) => {
+    return countryProperties.filter((property) => {
       const matchesFilter =
         assetFilter === "all" ||
         (assetFilter === "office" && property.type.toLowerCase().includes("office")) ||
@@ -176,14 +236,14 @@ export function CREWorkspace() {
           .join(" ")
           .toLowerCase()
           .includes(normalizedSearch) ||
-        evidenceCorpus.some(
+        countryEvidence.some(
           (evidence) =>
             evidence.propertyId === property.id &&
             evidence.excerpt.toLowerCase().includes(normalizedSearch),
         );
       return matchesFilter && matchesSearch;
     });
-  }, [assetFilter, searchTerm]);
+  }, [assetFilter, countryEvidence, countryProperties, searchTerm]);
 
   useEffect(() => {
     if (
@@ -194,14 +254,24 @@ export function CREWorkspace() {
     }
   }, [filteredProperties, selectedId]);
 
+  useEffect(() => {
+    if (countryProperties.length > 0) {
+      setSelectedId(countryProperties[0].id);
+    }
+  }, [countryCode, countryProperties]);
+
   const selected =
     filteredProperties.find((property) => property.id === selectedId) ??
-    properties.find((property) => property.id === selectedId) ??
+    countryProperties.find((property) => property.id === selectedId) ??
+    countryProperties[0] ??
     properties[0];
-  const selectedEvidence = evidenceCorpus.filter(
+  const selectedEvidence = countryEvidence.filter(
     (evidence) => evidence.propertyId === selected.id,
   );
-  const series = marketSeries[model];
+  const series = useMemo(
+    () => getCountryMarketSeries(countryCode, model),
+    [countryCode, model],
+  );
 
   const scenarioSeries = useMemo(() => {
     const modifier = scenario === "rates" ? 1.12 : scenario === "supply" ? 0.94 : 1;
@@ -211,6 +281,44 @@ export function CREWorkspace() {
   const forecastDelta = useMemo(
     () => Math.round(((scenarioSeries.at(-1)! - scenarioSeries[0]) / scenarioSeries[0]) * 100),
     [scenarioSeries],
+  );
+  const regionalVolume = useMemo(
+    () => `$${(countryProfile.companyCount * 0.052).toFixed(2)}bn`,
+    [countryProfile.companyCount],
+  );
+  const highConvictionSignals = useMemo(
+    () => Math.max(10, Math.round(countryProfile.companyCount * 0.42)),
+    [countryProfile.companyCount],
+  );
+  const freshSignalCount = useMemo(
+    () => Math.max(2, Math.round(countryProfile.projectCount / 3)),
+    [countryProfile.projectCount],
+  );
+  const mapLabels = useMemo(() => {
+    const unique = Array.from(new Set(countryProperties.map((property) => property.district)));
+    return [unique[0], unique[1], unique[2]].filter(Boolean) as string[];
+  }, [countryProperties]);
+  const globalCompanyCount = globalSearchStats.companies;
+  const globalProjectCount = globalSearchStats.projects;
+  const globalExpertiseCount = useMemo(
+    () => countryProfiles.reduce((sum, profile) => sum + profile.expertiseCount, 0),
+    [countryProfiles],
+  );
+  const globalForecastDelta = useMemo(() => {
+    const deltas = countryProfiles.map((profile) => {
+      const line = getCountryMarketSeries(profile.code, model);
+      return ((line.at(-1)! - line[0]) / line[0]) * 100;
+    });
+    const average = deltas.reduce((sum, value) => sum + value, 0) / Math.max(1, deltas.length);
+    return Math.round(average);
+  }, [countryProfiles, model]);
+  const topCountries = useMemo(
+    () => [...countryProfiles].sort((left, right) => right.companyCount - left.companyCount),
+    [countryProfiles],
+  );
+  const globalSearchResult = useMemo(
+    () => searchGlobalRealEstate(globalQuery, { countryCode: globalScope, limit: 6 }),
+    [globalQuery, globalScope],
   );
 
   function notify(message: string) {
@@ -261,20 +369,16 @@ export function CREWorkspace() {
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question, propertyId: selected.id }),
+        body: JSON.stringify({ question, propertyId: selected.id, countryCode }),
       });
       if (response.ok) {
-        const payload = (await response.json()) as { answer: string };
-        setAnswer(payload.answer);
+        const payload = (await response.json()) as { answer?: string };
+        setAnswer(payload.answer ?? composeLocalAnswer(question, selected, selectedEvidence));
       } else {
-        setAnswer(
-          "The retrieved evidence indicates planning support for laboratory-enabled employment space and constrained local supply. Review the cited passages before making an investment decision.",
-        );
+        setAnswer(composeLocalAnswer(question, selected, selectedEvidence));
       }
     } catch {
-      setAnswer(
-        "The retrieved evidence indicates planning support for laboratory-enabled employment space and constrained local supply. Review the cited passages before making an investment decision.",
-      );
+      setAnswer(composeLocalAnswer(question, selected, selectedEvidence));
     } finally {
       setIsThinking(false);
     }
@@ -317,8 +421,9 @@ export function CREWorkspace() {
       <section className="main-panel">
         <header className="topbar">
           <div>
-            <p className="eyebrow">London · Commercial real estate</p>
+            <p className="eyebrow">Global intelligence network · {countryProfile.name} focus</p>
             <h1>
+              {view === "platform" && "A connected global real-estate platform."}
               {view === "radar" && "See the market before it moves."}
               {view === "research" && "Research that shows its work."}
               {view === "forecast" && "Model tomorrow’s market."}
@@ -326,6 +431,20 @@ export function CREWorkspace() {
             </h1>
           </div>
           <div className="top-actions">
+            <label className="country-select">
+              <span>Country</span>
+              <select
+                aria-label="Select market country"
+                value={countryCode}
+                onChange={(event) => setCountryCode(event.target.value as CountryCode)}
+              >
+                {countryProfiles.map((country) => (
+                  <option key={country.code} value={country.code}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label className="global-search">
               <span>⌕</span>
               <input
@@ -342,6 +461,155 @@ export function CREWorkspace() {
             </button>
           </div>
         </header>
+
+        {view === "platform" && (
+          <div className="platform-layout">
+            <section className="platform-cosmos">
+              <div className="cosmos-title">
+                <span className="section-kicker">Propeterra-inspired interface</span>
+                <h2>Global command sphere</h2>
+                <p>
+                  Unified geospatial apps, transaction intelligence and market analytics
+                  connected to country-level real-estate datasets.
+                </p>
+              </div>
+
+              <div className="cosmos-core">
+                <div className="tool-column left">
+                  <span className="column-label">Geo spatial apps</span>
+                  {topCountries.slice(0, 3).map((profile) => (
+                    <button
+                      key={profile.code}
+                      className={`tool-node ${countryCode === profile.code ? "active" : ""}`}
+                      onClick={() => setCountryCode(profile.code)}
+                    >
+                      <strong>{profile.name}</strong>
+                      <small>{profile.companyCount} firms</small>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="planetary-core" aria-label="Global platform intelligence graph">
+                  <div className="glow-ring ring-one" />
+                  <div className="glow-ring ring-two" />
+                  <div className="planet-center">
+                    <small>PROPETERRA GLOBAL</small>
+                    <strong>{globalCompanyCount.toLocaleString()}</strong>
+                    <span>Companies indexed</span>
+                  </div>
+                  <div className="orbit-country-grid">
+                    {countryProfiles.map((profile) => (
+                      <button
+                        key={profile.code}
+                        className={`orbit-country ${countryCode === profile.code ? "active" : ""}`}
+                        onClick={() => setCountryCode(profile.code)}
+                        aria-label={`Focus ${profile.name}`}
+                      >
+                        <b>{profile.code}</b>
+                        <span>{profile.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="tool-column right">
+                  <span className="column-label">Data analytics</span>
+                  {topCountries.slice(3).map((profile) => (
+                    <button
+                      key={profile.code}
+                      className={`tool-node ${countryCode === profile.code ? "active" : ""}`}
+                      onClick={() => setCountryCode(profile.code)}
+                    >
+                      <strong>{profile.name}</strong>
+                      <small>{profile.projectCount} projects</small>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="resource-clusters">
+                {[
+                  ["Frontier markets", "High-upside early cycle regions"],
+                  ["Emerging markets", "Demand-led urbanization corridors"],
+                  ["Developed markets", "Stabilized institutional districts"],
+                  ["Social impact", "Housing and mixed-use inclusion themes"],
+                ].map(([label, description]) => (
+                  <article key={label}>
+                    <span>{label}</span>
+                    <small>{description}</small>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <aside className="platform-insights">
+              <div className="insight-card">
+                <span>Country coverage</span>
+                <strong>{globalSearchStats.countries}</strong>
+                <small>active market datasets</small>
+              </div>
+              <div className="insight-card">
+                <span>Projects mapped</span>
+                <strong>{globalProjectCount}</strong>
+                <small>structured project records</small>
+              </div>
+              <div className="insight-card">
+                <span>Expertise vectors</span>
+                <strong>{globalExpertiseCount}</strong>
+                <small>cross-market capability tags</small>
+              </div>
+              <div className="insight-card highlight">
+                <span>Composite forecast</span>
+                <strong>+{globalForecastDelta}%</strong>
+                <small>{model === "predrnn" ? "PredRNN" : "ConvLSTM"} global mean horizon</small>
+              </div>
+              <div className="global-search-panel">
+                <span className="section-kicker">Global data search</span>
+                <label>
+                  <input
+                    value={globalQuery}
+                    onChange={(event) => setGlobalQuery(event.target.value)}
+                    placeholder="Search companies, projects, locations"
+                    aria-label="Search global real estate data"
+                  />
+                </label>
+                <label>
+                  <select
+                    value={globalScope}
+                    onChange={(event) => setGlobalScope(event.target.value as CountryCode | "ALL")}
+                    aria-label="Filter global search by country"
+                  >
+                    <option value="ALL">All countries</option>
+                    {globalCountrySummaries.map((summary) => (
+                      <option key={summary.code} value={summary.code}>
+                        {summary.country}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <div className="search-result-list">
+                  {globalSearchResult.results.length === 0 && (
+                    <small>No records found for this query.</small>
+                  )}
+                  {globalSearchResult.results.map((result) => (
+                    <button
+                      key={result.id}
+                      onClick={() => setCountryCode(result.countryCode)}
+                    >
+                      <strong>{result.propertyName}</strong>
+                      <span>{result.country} · {result.companyName}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="workspace-jumps">
+                <button onClick={() => setView("radar")}>Open deal radar</button>
+                <button onClick={() => setView("research")}>Open AI research</button>
+                <button onClick={() => setView("forecast")}>Open forecast lab</button>
+              </div>
+            </aside>
+          </div>
+        )}
 
         {view === "radar" && (
           <div className="view-grid radar-view">
@@ -370,7 +638,9 @@ export function CREWorkspace() {
               </div>
               <PropertyMap
                 selected={selected.id}
-                properties={filteredProperties.length ? filteredProperties : properties}
+                properties={filteredProperties.length ? filteredProperties : countryProperties}
+                labels={mapLabels}
+                mapKey={`${countryProfile.companyCount.toLocaleString()} tracked companies · refreshed 4 min ago`}
                 onSelect={(property) => setSelectedId(property.id)}
               />
             </section>
@@ -384,8 +654,9 @@ export function CREWorkspace() {
               <h2>{selected.name}</h2>
               <p className="address">{selected.address} · {selected.district}</p>
               <p className="signal-copy">
-                {selected.signal} is strengthening across planning, leasing and
-                mobility evidence. The model identifies a 71% probability of
+                {selected.signal} is strengthening across public registry,
+                company-footprint and market-activity evidence. The model
+                identifies a {68 + Math.round(countryProfile.momentumBias * 140)}% probability of
                 above-market NOI growth.
               </p>
               <dl className="asset-metrics">
@@ -402,18 +673,18 @@ export function CREWorkspace() {
             <section className="market-strip">
               <article>
                 <span>Tracked investment volume</span>
-                <strong>£3.84bn</strong>
-                <small className="positive">↑ 12.6% quarter on quarter</small>
+                <strong>{regionalVolume}</strong>
+                <small className="positive">↑ {Math.max(2.1, (forecastDelta / 2)).toFixed(1)}% quarter on quarter</small>
               </article>
               <article>
                 <span>High-conviction signals</span>
-                <strong>37</strong>
-                <small>8 new in the last seven days</small>
+                <strong>{highConvictionSignals}</strong>
+                <small>{freshSignalCount} new in the last seven days</small>
               </article>
               <article>
                 <span>Prime office rent forecast</span>
-                <strong>+9.1%</strong>
-                <small>PredRNN · 12-month horizon</small>
+                <strong>+{forecastDelta}%</strong>
+                <small>{model === "predrnn" ? "PredRNN" : "ConvLSTM"} · 12-month horizon</small>
               </article>
               <article className="mini-chart">
                 <span>Composite market momentum</span>
@@ -438,7 +709,7 @@ export function CREWorkspace() {
                     value={selected.id}
                     onChange={(event) => setSelectedId(event.target.value)}
                   >
-                    {properties.map((property) => (
+                    {countryProperties.map((property) => (
                       <option key={property.id} value={property.id}>
                         {property.name}
                       </option>
@@ -459,7 +730,7 @@ export function CREWorkspace() {
                   {isThinking ? "Retrieving evidence and traversing relationships…" : answer}
                 </p>
                 <div className="citation-pills">
-                  {(selectedEvidence.length ? selectedEvidence : evidenceCorpus.slice(0, 2)).map(
+                  {(selectedEvidence.length ? selectedEvidence : countryEvidence.slice(0, 2)).map(
                     (evidence, index) => (
                       <button key={evidence.id}>[{index + 1}] {evidence.source}</button>
                     ),
@@ -501,7 +772,7 @@ export function CREWorkspace() {
                 </div>
                 <span>{selectedEvidence.length || 2}</span>
               </div>
-              {(selectedEvidence.length ? selectedEvidence : evidenceCorpus.slice(0, 2)).map(
+              {(selectedEvidence.length ? selectedEvidence : countryEvidence.slice(0, 2)).map(
                 (evidence, index) => (
                   <article key={evidence.id}>
                     <div className="source-index">{index + 1}</div>
@@ -533,7 +804,7 @@ export function CREWorkspace() {
               <div className="forecast-head">
                 <div>
                   <span className="section-kicker">Spatiotemporal prediction</span>
-                  <h2>King’s Cross rental momentum</h2>
+                  <h2>{countryProfile.name} rental momentum</h2>
                   <p>Quarterly prime-rent index · 12-month horizon</p>
                 </div>
                 <div className="model-switch" role="group" aria-label="Forecast model">

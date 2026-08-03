@@ -34,7 +34,7 @@ pnpm run dev
 | Email enrichment/outreach | Hunter.io adapter plus verification, lawful-basis, suppression and human-approval gates |
 | RAG | Hybrid vector similarity and property-graph relationship bonus with exact evidence citations |
 | PDF intelligence | PyPDF extraction, page/character locators, deterministic chunks and document hashes |
-| Market analytics | Interactive asset map, opportunity scores, market momentum and investment-research views |
+| Market analytics | Interactive multi-country asset map, opportunity scores, market momentum and investment-research views |
 | Geospatial prediction | Working PyTorch ConvLSTM and PredRNN architectures with training entry point |
 | Production operations | Cloudflare Sites app, D1/R2 bindings, AWS reference infrastructure and GitHub Actions |
 
@@ -59,6 +59,19 @@ flowchart TD
 The live application uses a Cloudflare-compatible Next.js runtime. The
 `services/` directory contains the AWS/Python production service implementations
 for ingestion, enrichment, hybrid retrieval and forecasting.
+
+## Country intelligence coverage
+
+The workspace now includes a country selector with integrated datasets for:
+
+- Afghanistan
+- Bangladesh
+- Bhutan
+- India
+- Pakistan
+- Sri Lanka
+
+Source records are normalized from the linked `Propeterra-Work_Artificial-Intelligence-Engineer` repository (`team1_*` and `team3_*` JSON files), then transformed into country-level company coverage, evidence snapshots and market-bias-adjusted forecast series for the interactive workspace.
 
 ## Run the workspace
 

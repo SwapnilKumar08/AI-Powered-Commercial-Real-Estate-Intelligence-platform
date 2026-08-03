@@ -1,136 +1,107 @@
 import Link from "next/link";
-import { marketSeries, properties } from "./lib/cre-data";
-
-const features = [
-  {
-    title: "Evidence-backed research",
-    description:
-      "Hybrid retrieval links planning, leasing and geospatial data with exact citations so every conclusion is traceable.",
-  },
-  {
-    title: "Market signals in one view",
-    description:
-      "Track high-conviction opportunities, supply shocks and demand momentum across central London submarkets.",
-  },
-  {
-    title: "Forecasts with spatial memory",
-    description:
-      "Compare ConvLSTM and PredRNN model outcomes, driver impacts and validation metrics in a single lab.",
-  },
-  {
-    title: "Responsible origination",
-    description:
-      "Verify contacts, review lawful basis and queue outreach only after compliance and human signoff.",
-  },
-];
+import { getCountryMarketSeries, listCountryProfiles } from "./lib/cre-data";
+import { globalCountrySummaries, globalSearchStats } from "./lib/global-real-estate";
 
 export default function Home() {
-  const activeSeries = marketSeries.predrnn;
-  const forecastDelta = Math.round(
-    ((activeSeries.at(-1)! - activeSeries[0]) / activeSeries[0]) * 100,
+  const profiles = listCountryProfiles();
+  const globalForecastDelta = Math.round(
+    profiles
+      .map((profile) => {
+        const series = getCountryMarketSeries(profile.code, "predrnn");
+        return ((series.at(-1)! - series[0]) / series[0]) * 100;
+      })
+      .reduce((sum, value) => sum + value, 0) / Math.max(1, profiles.length),
   );
 
   return (
-    <main className="landing">
-      <section className="landing-hero">
-        <div className="hero-copy">
-          <span className="eyebrow">Landmark AI</span>
-          <h1>Commercial real estate intelligence that keeps pace with the market.</h1>
+    <main className="global-landing">
+      <section className="global-hero-3d">
+        <div className="global-hero-copy">
+          <span className="eyebrow">PROPETERRA GLOBAL INTERFACE</span>
+          <h1>3D real-estate intelligence across global markets.</h1>
           <p>
-            Explore a dynamic workspace built for evidence-first investment research,
-            spatial forecasting and responsible deal origination.
+            Explore worldwide company and project records, run country-aware forecasts,
+            and move from discovery to deal origination in a single immersive workspace.
           </p>
           <div className="hero-actions">
             <Link className="primary-action" href="/workspace">
-              Launch the workspace
+              Launch 3D workspace
             </Link>
             <Link className="secondary-action" href="/workspace">
-              View market preview
+              Open global data search
             </Link>
           </div>
         </div>
 
-        <div className="hero-panel">
-          <div className="hero-stat">
-            <strong>{properties.length}</strong>
-            <span>tracked opportunity assets</span>
+        <div className="global-core-scene">
+          <div className="core-orbit orbit-a" />
+          <div className="core-orbit orbit-b" />
+          <div className="core-planet">
+            <small>LIVE INDEX</small>
+            <strong>{globalSearchStats.records}</strong>
+            <span>Global property records</span>
           </div>
-          <div className="hero-stat">
-            <strong>£3.8bn</strong>
-            <span>active volume in the last quarter</span>
-          </div>
-          <div className="hero-stat">
-            <strong>+{forecastDelta}%</strong>
-            <span>12-month rental forecast change</span>
-          </div>
-          <div className="hero-highlight">
-            <span>Featured asset</span>
-            <strong>{properties[0].name}</strong>
-            <small>{properties[0].district}</small>
-          </div>
+          <div className="core-node node-1">Consultelligence</div>
+          <div className="core-node node-2">Deal Planet</div>
+          <div className="core-node node-3">Heat Vision</div>
+          <div className="core-node node-4">Dashtelligence</div>
+          <div className="core-node node-5">Property News</div>
+          <div className="core-node node-6">Geo Spatial Apps</div>
         </div>
       </section>
 
-      <section className="feature-grid">
-        {features.map((feature) => (
-          <article key={feature.title} className="feature-card">
-            <h2>{feature.title}</h2>
-            <p>{feature.description}</p>
+      <section className="global-metrics-grid">
+        <article>
+          <span>Countries covered</span>
+          <strong>{globalSearchStats.countries}</strong>
+          <small>active market datasets</small>
+        </article>
+        <article>
+          <span>Companies indexed</span>
+          <strong>{globalSearchStats.companies}</strong>
+          <small>normalized from source files</small>
+        </article>
+        <article>
+          <span>Projects tracked</span>
+          <strong>{globalSearchStats.projects}</strong>
+          <small>deep records and developments</small>
+        </article>
+        <article>
+          <span>Forecast momentum</span>
+          <strong>+{globalForecastDelta}%</strong>
+          <small>PredRNN global average horizon</small>
+        </article>
+      </section>
+
+      <section className="global-country-grid">
+        {globalCountrySummaries.map((summary) => (
+          <article key={summary.code}>
+            <h2>{summary.country}</h2>
+            <p>{summary.companies} companies indexed</p>
+            <div>
+              <strong>{summary.projects}</strong>
+              <small>project-level records</small>
+            </div>
           </article>
         ))}
       </section>
 
-      <section className="property-grid">
-        {properties.map((property) => (
-          <article key={property.id} className="property-card">
-            <span className="property-score">{property.score}</span>
-            <h3>{property.name}</h3>
-            <p>{property.address}</p>
-            <div>
-              <strong>{property.capRate}</strong>
-              <small>entry yield</small>
-            </div>
-            <div>
-              <strong>{property.occupancy}</strong>
-              <small>occupancy</small>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section className="demo-section">
-        <div className="demo-copy">
-          <span className="section-kicker">Workspace preview</span>
-          <h2>Explore the intelligence workflow in action.</h2>
+      <section className="global-cta-strip">
+        <div>
+          <span className="section-kicker">Resource centres</span>
+          <h3>Frontier, emerging, developed and impact-led investment workflows.</h3>
           <p>
-            The same research, forecasting and origination views are available inside the
-            interactive Landmark AI workspace.
+            The workspace includes global search, traceable evidence, forecast lab and
+            responsible origination controls.
           </p>
-            <Link className="primary-action" href="/workspace">
-              Open the workspace
-            </Link>
         </div>
-        <div className="demo-frame" id="workspace-preview">
-          <div className="preview-panel">
-            <div className="preview-heading">
-              <span>Live workspace</span>
-              <strong>Hybrid CRE intelligence</strong>
-            </div>
-            <div className="preview-stat-grid">
-              <div>
-                <strong>37</strong>
-                <span>high-conviction signals</span>
-              </div>
-              <div>
-                <strong>91%</strong>
-                <span>research confidence</span>
-              </div>
-              <div>
-                <strong>+9.1%</strong>
-                <span>rental forecast</span>
-              </div>
-            </div>
-          </div>
+        <div className="hero-actions">
+          <Link className="primary-action" href="/workspace">
+            Enter workspace
+          </Link>
+          <Link className="secondary-action" href="/workspace">
+            Start market discovery
+          </Link>
         </div>
       </section>
     </main>

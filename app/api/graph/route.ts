@@ -1,12 +1,21 @@
-import { evidenceCorpus, properties } from "../../lib/cre-data";
+import {
+  defaultCountryCode,
+  getCountryEvidence,
+  getCountryProperties,
+  type CountryCode,
+} from "../../lib/cre-data";
 
 export const runtime = "edge";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const propertyId = url.searchParams.get("propertyId") ?? properties[0].id;
-  const property = properties.find((item) => item.id === propertyId) ?? properties[0];
-  const sources = evidenceCorpus.filter((item) => item.propertyId === property.id);
+  const countryCode = (url.searchParams.get("countryCode") as CountryCode | null) ??
+    defaultCountryCode;
+  const countryProperties = getCountryProperties(countryCode);
+  const countryEvidence = getCountryEvidence(countryCode);
+  const propertyId = url.searchParams.get("propertyId") ?? countryProperties[0].id;
+  const property = countryProperties.find((item) => item.id === propertyId) ?? countryProperties[0];
+  const sources = countryEvidence.filter((item) => item.propertyId === property.id);
   const nodes = [
     { id: property.id, type: "Property", label: property.name },
     { id: `signal:${property.id}`, type: "Signal", label: property.signal },

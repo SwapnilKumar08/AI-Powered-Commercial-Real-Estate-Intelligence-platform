@@ -1,4 +1,9 @@
-import { evidenceCorpus, properties } from "../../lib/cre-data";
+import {
+  defaultCountryCode,
+  getCountryEvidence,
+  getCountryProperties,
+  type CountryCode,
+} from "../../lib/cre-data";
 import { cosine, semanticVector } from "../../lib/runtime";
 
 export const runtime = "edge";
@@ -7,15 +12,19 @@ export async function POST(request: Request) {
   const payload = (await request.json().catch(() => ({}))) as {
     question?: string;
     propertyId?: string;
+    countryCode?: CountryCode;
   };
   const question = payload.question?.trim();
   if (!question) {
     return Response.json({ error: "A research question is required." }, { status: 400 });
   }
 
-  const selectedProperty = properties.find((property) => property.id === payload.propertyId);
+  const countryCode = payload.countryCode ?? defaultCountryCode;
+  const countryProperties = getCountryProperties(countryCode);
+  const countryEvidence = getCountryEvidence(countryCode);
+  const selectedProperty = countryProperties.find((property) => property.id === payload.propertyId);
   const queryVector = semanticVector(question);
-  const ranked = evidenceCorpus
+  const ranked = countryEvidence
     .map((evidence) => {
       const vectorScore = cosine(queryVector, semanticVector(evidence.excerpt));
       const graphBonus = evidence.propertyId === payload.propertyId ? 0.22 : 0;
@@ -48,11 +57,11 @@ export async function POST(request: Request) {
     })),
     retrieval: {
       architecture: "hybrid-vector-plus-knowledge-graph",
-      candidates: evidenceCorpus.length,
+      candidates: countryEvidence.length,
       graphPath:
-        payload.propertyId === "ARG-01"
-          ? ["The Arches", "life-science conversion", "NOI growth"]
-          : [propertyName, selectedProperty?.signal ?? "market signal"],
+        selectedProperty
+          ? [propertyName, selectedProperty.signal, "NOI growth"]
+          : [propertyName, "market signal"],
     },
     disclaimer: "Demonstration intelligence, not investment advice.",
   });
