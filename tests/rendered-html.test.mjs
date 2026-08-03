@@ -9,7 +9,7 @@ test("contains the complete Landmark AI product workspace", async () => {
     new URL("../app/components/CREWorkspace.tsx", import.meta.url),
     "utf8",
   );
-  assert.match(workspace, /Landmark <strong>AI/);
+  assert.match(workspace, /Landmark-AI-Data-Search/);
   assert.match(workspace, /See the market before it moves/);
   assert.match(workspace, /Deal radar/);
   assert.match(workspace, /Hybrid RAG workspace/);
@@ -20,14 +20,16 @@ test("contains the complete Landmark AI product workspace", async () => {
 });
 
 test("contains production metadata and removes the temporary preview", async () => {
-  const [layout, page, packageJson] = await Promise.all([
+  const [layout, homePage, workspacePage, packageJson] = await Promise.all([
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/workspace/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
   ]);
   assert.match(layout, /Commercial real estate intelligence/);
   assert.match(layout, /og\.png/);
-  assert.match(page, /CREWorkspace/);
+  assert.match(homePage, /href="\/workspace"/);
+  assert.match(workspacePage, /CREWorkspace/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await assert.rejects(access(new URL("app/_sites-preview", root)));
   await Promise.all(

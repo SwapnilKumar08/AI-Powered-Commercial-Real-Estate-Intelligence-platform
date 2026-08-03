@@ -1,18 +1,29 @@
 # Landmark-AI-Data-Search
 
-https://ominous-meme-v9gg7p9gwj53w746-3000.app.github.dev/workspace
-
 Commercial real estate intelligence that combines document evidence, market
 data, a property knowledge graph and spatiotemporal forecasts in one research
 and origination workspace.
 
-<img width="1122" height="729" alt="image" src="https://github.com/user-attachments/assets/c8dc39e1-913b-4f2d-8ebe-c86aa66099ff" />
-
-![Landmark AI social preview](public/og.png)
+![Landmark-AI-Data-Search social preview](public/og.png)
 
 > The included records and forecasts are synthetic engineering demonstrations.
 > They are not investment advice, licensed market data or production model
 > performance claims.
+
+## Try the application
+
+[![Open Landmark AI](https://img.shields.io/badge/Open-Landmark%20AI-4F46E5?style=for-the-badge&logo=github&logoColor=white)](https://swapnilkumar08.github.io/AI-Powered-Commercial-Real-Estate-Intelligence-platform/)
+
+Explore the permanent static site here: [Landmark AI website](https://swapnilkumar08.github.io/AI-Powered-Commercial-Real-Estate-Intelligence-platform/)
+
+The interactive workspace is available at: [Landmark AI workspace](https://swapnilkumar08.github.io/AI-Powered-Commercial-Real-Estate-Intelligence-platform/workspace/)
+
+If you prefer to run it locally, use:
+
+```bash
+pnpm install
+pnpm run dev
+```
 
 ## What is implemented
 
@@ -65,6 +76,29 @@ pnpm run build
 node --test tests/rendered-html.test.mjs
 ```
 
+Build the static GitHub Pages site locally:
+
+```bash
+pnpm run build:pages
+```
+
+## Deploy to GitHub Pages
+
+This repository includes [.github/workflows/nextjs.yml](.github/workflows/nextjs.yml), which builds a static export and publishes it to GitHub Pages.
+
+To enable the permanent site:
+
+1. Push the repository to GitHub.
+2. Open Settings -> Pages.
+3. Set Source to GitHub Actions.
+4. Push to `main` or run the `deploy-pages` workflow manually.
+
+The published URL for this repository is:
+
+`https://swapnilkumar08.github.io/AI-Powered-Commercial-Real-Estate-Intelligence-platform/`
+
+The Pages deployment is a static demo build. The Cloudflare runtime APIs under `app/api/` are excluded from the Pages export, so the permanent site preserves the UI and demo flows while the full server-backed runtime remains available for Cloudflare-style deployments.
+
 Generate D1 migrations after changing `db/schema.ts`:
 
 ```bash
@@ -92,64 +126,3 @@ Expected tensor shapes:
 Recommended channels are rent index, vacancy, take-up, new supply, planning
 intensity and anonymised mobility. Train, validation and test splits must be
 time-based to prevent future leakage.
-
-## REST surface
-
-| Method | Endpoint | Purpose |
-|---|---|---|
-| `POST` | `/api/ask` | Evidence-backed hybrid RAG question answering |
-| `GET/POST` | `/api/documents` | List or ingest research documents |
-| `GET` | `/api/graph?propertyId=ARG-01` | Property relationship subgraph |
-| `POST` | `/api/forecast` | ConvLSTM/PredRNN forecast contract |
-| `POST` | `/api/outreach` | Policy-gated outreach decision |
-
-Example RAG request:
-
-```bash
-curl -X POST http://localhost:3000/api/ask \
-  -H 'content-type: application/json' \
-  -d '{
-    "propertyId": "ARG-01",
-    "question": "Why is The Arches a high-conviction opportunity?"
-  }'
-```
-
-Every citation includes a source locator, exact quote and source hash.
-
-## Data acquisition policy
-
-- Use licensed feeds, public records, authorised APIs and customer-owned files.
-- LinkedIn data is accepted only through an authorised API or an export
-  supplied by the account holder. The repository contains no credential
-  automation, access-control bypass or page-scraping implementation.
-- Hunter.io results are treated as leads, not consent. Outreach remains blocked
-  until email verification, lawful-basis review, suppression and frequency
-  checks pass.
-- A human must approve all outbound messages.
-- Apply UK GDPR, PECR, CAN-SPAM and local requirements as applicable.
-
-## AWS production mapping
-
-- S3: source documents, raw feeds and forecast grids
-- Textract: scanned PDF and image OCR
-- EventBridge / Step Functions: ingestion orchestration
-- RDS PostgreSQL + pgvector: evidence and semantic retrieval
-- Amazon Neptune or managed Neo4j: property knowledge graph
-- SageMaker: ConvLSTM/PredRNN training, registry and inference
-- ECS/Fargate: Python APIs and enrichment workers
-- Secrets Manager: provider credentials
-- CloudWatch: logs, drift metrics and operational alarms
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) and
-[docs/MODEL_GOVERNANCE.md](docs/MODEL_GOVERNANCE.md).
-
-## Security
-
-Never commit provider keys, licensed datasets, personal data or model artefacts
-containing raw customer records. Use workspace-hosted runtime variables or AWS
-Secrets Manager. See [SECURITY.md](SECURITY.md).
-
-## Licence
-
-MIT. Third-party data and model weights retain their own licences.
-

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   evidenceCorpus,
   marketSeries,
@@ -10,6 +10,19 @@ import {
 
 type View = "radar" | "research" | "forecast" | "origination";
 type ForecastModel = "convlstm" | "predrnn";
+type AssetFilter = "all" | "office" | "logistics" | "mixed-use";
+type Scenario = "base" | "rates" | "supply";
+type ContactSource = {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  fit: number;
+  email: "Verified" | "Unverified";
+  lawfulBasis: string;
+  status: "Ready" | "Hold";
+};
+type ContactState = ContactSource & { queued: boolean };
 
 const navigation: { id: View; label: string; glyph: string }[] = [
   { id: "radar", label: "Deal radar", glyph: "⌁" },
@@ -18,7 +31,7 @@ const navigation: { id: View; label: string; glyph: string }[] = [
   { id: "origination", label: "Origination", glyph: "↗" },
 ];
 
-const contacts = [
+const contacts: ContactSource[] = [
   {
     id: "L-21",
     name: "Amelia Hart",
@@ -90,9 +103,11 @@ function Sparkline({
 
 function PropertyMap({
   selected,
+  properties,
   onSelect,
 }: {
   selected: string;
+  properties: PropertyRecord[];
   onSelect: (property: PropertyRecord) => void;
 }) {
   return (
@@ -127,6 +142,12 @@ export function CREWorkspace() {
   const [view, setView] = useState<View>("radar");
   const [selectedId, setSelectedId] = useState(properties[0].id);
   const [model, setModel] = useState<ForecastModel>("predrnn");
+  const [assetFilter, setAssetFilter] = useState<AssetFilter>("all");
+  const [scenario, setScenario] = useState<Scenario>("base");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [contactStates, setContactStates] = useState<ContactState[]>(
+    contacts.map((contact) => ({ ...contact, queued: false })),
+  );
   const [question, setQuestion] = useState(
     "Why is The Arches ranked as a high-conviction opportunity?",
   );
@@ -135,21 +156,101 @@ export function CREWorkspace() {
   );
   const [isThinking, setIsThinking] = useState(false);
   const [toast, setToast] = useState("");
+  const filteredProperties = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+    return properties.filter((property) => {
+      const matchesFilter =
+        assetFilter === "all" ||
+        (assetFilter === "office" && property.type.toLowerCase().includes("office")) ||
+        (assetFilter === "logistics" && property.type.toLowerCase().includes("logistics")) ||
+        (assetFilter === "mixed-use" && property.type.toLowerCase().includes("mixed"));
+      const matchesSearch =
+        !normalizedSearch ||
+        [
+          property.name,
+          property.address,
+          property.district,
+          property.type,
+          property.signal,
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedSearch) ||
+        evidenceCorpus.some(
+          (evidence) =>
+            evidence.propertyId === property.id &&
+            evidence.excerpt.toLowerCase().includes(normalizedSearch),
+        );
+      return matchesFilter && matchesSearch;
+    });
+  }, [assetFilter, searchTerm]);
+
+  useEffect(() => {
+    if (
+      filteredProperties.length > 0 &&
+      !filteredProperties.some((property) => property.id === selectedId)
+    ) {
+      setSelectedId(filteredProperties[0].id);
+    }
+  }, [filteredProperties, selectedId]);
+
   const selected =
-    properties.find((property) => property.id === selectedId) ?? properties[0];
+    filteredProperties.find((property) => property.id === selectedId) ??
+    properties.find((property) => property.id === selectedId) ??
+    properties[0];
   const selectedEvidence = evidenceCorpus.filter(
     (evidence) => evidence.propertyId === selected.id,
   );
   const series = marketSeries[model];
 
+  const scenarioSeries = useMemo(() => {
+    const modifier = scenario === "rates" ? 1.12 : scenario === "supply" ? 0.94 : 1;
+    return series.map((value) => Math.round(value * modifier));
+  }, [series, scenario]);
+
   const forecastDelta = useMemo(
-    () => Math.round(((series.at(-1)! - series[0]) / series[0]) * 100),
-    [series],
+    () => Math.round(((scenarioSeries.at(-1)! - scenarioSeries[0]) / scenarioSeries[0]) * 100),
+    [scenarioSeries],
   );
 
   function notify(message: string) {
     setToast(message);
     window.setTimeout(() => setToast(""), 2800);
+  }
+
+  function queueReadyContacts() {
+    const queueable = contactStates.filter((contact) => contact.status === "Ready" && !contact.queued);
+    if (queueable.length === 0) {
+      notify("No additional ready contacts available for queue.");
+      return;
+    }
+    setContactStates((current) =>
+      current.map((contact) =>
+        contact.status === "Ready" ? { ...contact, queued: true } : contact,
+      ),
+    );
+    notify(`${queueable.length} compliant contacts added to review queue`);
+  }
+
+  function toggleContactQueue(contactId: string) {
+    const contact = contactStates.find((item) => item.id === contactId);
+    if (!contact) return;
+
+    if (contact.status === "Ready") {
+      if (contact.queued) {
+        notify(`${contact.name} is already queued for review`);
+        return;
+      }
+      setContactStates((current) =>
+        current.map((item) =>
+          item.id === contactId ? { ...item, queued: true } : item,
+        ),
+      );
+      notify(`${contact.name} added for human approval`);
+      return;
+    }
+
+    notify("Contact held until verification and lawful-basis review");
   }
 
   async function askResearch(event: FormEvent) {
@@ -184,7 +285,7 @@ export function CREWorkspace() {
       <aside className="sidebar">
         <div className="brand">
           <span className="brand-mark">L</span>
-          <span>Landmark <strong>AI</strong></span>
+          <span>Landmark-AI-Data-Search</span>
         </div>
         <nav aria-label="Workspace navigation">
           {navigation.map((item) => (
@@ -230,6 +331,8 @@ export function CREWorkspace() {
               <input
                 aria-label="Search properties, companies and documents"
                 placeholder="Search assets, owners, evidence…"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
               />
               <kbd>⌘ K</kbd>
             </label>
@@ -249,14 +352,25 @@ export function CREWorkspace() {
                   <h2>Conviction map</h2>
                 </div>
                 <div className="filter-row">
-                  <button className="filter active">All assets</button>
-                  <button className="filter">Office</button>
-                  <button className="filter">Logistics</button>
-                  <button className="filter">Mixed-use</button>
+                  {([
+                    ["all", "All assets"],
+                    ["office", "Office"],
+                    ["logistics", "Logistics"],
+                    ["mixed-use", "Mixed-use"],
+                  ] as [AssetFilter, string][]).map(([filterId, label]) => (
+                    <button
+                      key={filterId}
+                      className={`filter ${assetFilter === filterId ? "active" : ""}`}
+                      onClick={() => setAssetFilter(filterId)}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
               </div>
               <PropertyMap
                 selected={selected.id}
+                properties={filteredProperties.length ? filteredProperties : properties}
                 onSelect={(property) => setSelectedId(property.id)}
               />
             </section>
@@ -336,7 +450,7 @@ export function CREWorkspace() {
                 <div className="answer-head">
                   <span className="ai-orb">✦</span>
                   <div>
-                    <strong>Landmark research agent</strong>
+                    <strong>Landmark-AI-Data-Search research agent</strong>
                     <small>Vector retrieval + property knowledge graph</small>
                   </div>
                   <span className="confidence">91% confidence</span>
@@ -362,7 +476,7 @@ export function CREWorkspace() {
                 <div>
                   <span>Answers are constrained to indexed evidence</span>
                   <button type="submit" disabled={isThinking}>
-                    Ask Landmark <span>↑</span>
+                    Ask Landmark-AI-Data-Search <span>↑</span>
                   </button>
                 </div>
               </form>
@@ -443,7 +557,7 @@ export function CREWorkspace() {
                   <strong>+{forecastDelta}%</strong>
                   <small>90% interval: +{forecastDelta - 7}% to +{forecastDelta + 8}%</small>
                 </div>
-                <Sparkline values={series} />
+                <Sparkline values={scenarioSeries} />
                 <div className="chart-axis">
                   <span>Jul ’25</span><span>Jan ’26</span><span>Jul ’26</span><span>Jul ’27</span>
                 </div>
@@ -478,15 +592,23 @@ export function CREWorkspace() {
             </aside>
 
             <section className="scenario-row">
-              {[
-                ["Base case", "+9.1%", "Current rates and planned supply"],
-                ["Rates ease 75 bps", "+14.8%", "Capital-market recovery accelerates"],
-                ["Supply shock", "+3.4%", "Two schemes complete six months early"],
-              ].map(([name, value, description], index) => (
-                <button className={index === 0 ? "active" : ""} key={name}>
-                  <span>{name}</span><strong>{value}</strong><small>{description}</small>
-                </button>
-              ))}
+              {([
+                ["base", "Base case", "+9.1%", "Current rates and planned supply"],
+                ["rates", "Rates ease 75 bps", "+14.8%", "Capital-market recovery accelerates"],
+                ["supply", "Supply shock", "+3.4%", "Two schemes complete six months early"],
+              ] as [Scenario, string, string, string][]).map(
+                ([scenarioId, name, value, description]) => (
+                  <button
+                    key={scenarioId}
+                    className={scenario === scenarioId ? "active" : ""}
+                    onClick={() => setScenario(scenarioId)}
+                  >
+                    <span>{name}</span>
+                    <strong>{value}</strong>
+                    <small>{description}</small>
+                  </button>
+                ),
+              )}
             </section>
           </div>
         )}
@@ -502,10 +624,7 @@ export function CREWorkspace() {
                   and verified professional contact data.
                 </p>
               </div>
-              <button
-                className="primary-action"
-                onClick={() => notify("2 compliant contacts added to review queue")}
-              >
+              <button className="primary-action" onClick={queueReadyContacts}>
                 Create review queue <span>↗</span>
               </button>
             </section>
@@ -514,7 +633,7 @@ export function CREWorkspace() {
                 <span>Contact</span><span>Mandate fit</span><span>Email</span>
                 <span>Lawful basis</span><span>Decision</span>
               </div>
-              {contacts.map((contact) => (
+              {contactStates.map((contact) => (
                 <div className="contact-row" key={contact.id}>
                   <div className="contact-name">
                     <span>{contact.name.split(" ").map((part) => part[0]).join("")}</span>
@@ -527,15 +646,9 @@ export function CREWorkspace() {
                   <small>{contact.lawfulBasis}</small>
                   <button
                     className={`decision ${contact.status === "Ready" ? "ready" : ""}`}
-                    onClick={() =>
-                      notify(
-                        contact.status === "Ready"
-                          ? `${contact.name} added for human approval`
-                          : "Contact held until verification and lawful-basis review",
-                      )
-                    }
+                    onClick={() => toggleContactQueue(contact.id)}
                   >
-                    {contact.status}
+                    {contact.queued ? "Queued" : contact.status}
                   </button>
                 </div>
               ))}

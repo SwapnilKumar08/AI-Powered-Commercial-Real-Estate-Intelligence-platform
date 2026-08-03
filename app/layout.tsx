@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { headers } from "next/headers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,37 +12,38 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? "https";
-  const origin = host ? `${protocol}://${host}` : "https://localhost";
-  const socialImage = `${origin}/og.png`;
-  return {
-    metadataBase: new URL(origin),
-    title: "Landmark AI — Commercial real estate intelligence",
+const repository = process.env.GITHUB_REPOSITORY?.split("/")[1] ?? "";
+const owner = process.env.GITHUB_REPOSITORY_OWNER ?? "SwapnilKumar08";
+const isGitHubPagesBuild = process.env.GITHUB_PAGES === "true";
+const basePath = isGitHubPagesBuild && repository ? `/${repository}` : "";
+const siteUrl = isGitHubPagesBuild && repository
+  ? `https://${owner}.github.io/${repository}`
+  : "http://localhost:3000";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: "Landmark-AI-Data-Search — Commercial real estate intelligence",
+  description:
+    "Evidence-backed market intelligence, property research, geospatial forecasting and responsible deal origination.",
+  icons: {
+    icon: `${basePath}/favicon.svg`,
+    shortcut: `${basePath}/favicon.svg`,
+  },
+  openGraph: {
+    title: "Landmark-AI-Data-Search — See the market before it moves",
     description:
-      "Evidence-backed market intelligence, property research, geospatial forecasting and responsible deal origination.",
-    icons: {
-      icon: "/favicon.svg",
-      shortcut: "/favicon.svg",
-    },
-    openGraph: {
-      title: "Landmark AI — See the market before it moves",
-      description:
-        "A commercial real estate intelligence workspace powered by hybrid RAG, a property knowledge graph and spatiotemporal forecasting.",
-      type: "website",
-      images: [socialImage],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "Landmark AI — Commercial real estate intelligence",
-      description:
-        "Research properties, forecast market movement and trace every insight to evidence.",
-      images: [socialImage],
-    },
-  };
-}
+      "A commercial real estate intelligence workspace powered by hybrid RAG, a property knowledge graph and spatiotemporal forecasting.",
+    type: "website",
+    images: [`${basePath}/og.png`],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Landmark-AI-Data-Search — Commercial real estate intelligence",
+    description:
+      "Research properties, forecast market movement and trace every insight to evidence.",
+    images: [`${basePath}/og.png`],
+  },
+};
 
 export default function RootLayout({
   children,

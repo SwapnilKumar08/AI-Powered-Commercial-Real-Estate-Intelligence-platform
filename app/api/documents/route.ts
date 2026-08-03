@@ -3,7 +3,7 @@ import { ensureRuntimeSchema, runtimeEnv, sha256 } from "../../lib/runtime";
 export const runtime = "edge";
 
 export async function GET() {
-  const { DB } = runtimeEnv();
+  const { DB } = await runtimeEnv();
   await ensureRuntimeSchema(DB);
   const result = await DB.prepare(
     "SELECT * FROM documents ORDER BY created_at DESC LIMIT 100",
@@ -12,7 +12,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { DB, DOCUMENTS } = runtimeEnv();
+  const { DB, DOCUMENTS } = await runtimeEnv();
   await ensureRuntimeSchema(DB);
   const form = await request.formData();
   const file = form.get("file");

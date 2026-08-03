@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     : "All automated policy checks passed; a person must approve the message.";
   const id = crypto.randomUUID();
 
-  const { DB } = runtimeEnv();
+  const { DB } = await runtimeEnv();
   await ensureRuntimeSchema(DB);
   await DB.prepare(
     `INSERT INTO outreach_events

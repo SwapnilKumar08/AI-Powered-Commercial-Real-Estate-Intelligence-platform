@@ -1,5 +1,3 @@
-import { env } from "cloudflare:workers";
-
 export type LandmarkEnv = {
   DB: D1Database;
   DOCUMENTS: R2Bucket;
@@ -8,7 +6,10 @@ export type LandmarkEnv = {
   FORECAST_API_URL?: string;
 };
 
-export const runtimeEnv = () => env as unknown as LandmarkEnv;
+export async function runtimeEnv() {
+  const { env } = await import("cloudflare:workers");
+  return env as unknown as LandmarkEnv;
+}
 
 export async function ensureRuntimeSchema(db: D1Database) {
   await db.batch([
